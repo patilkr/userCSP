@@ -1,0 +1,15 @@
+git commands:
+
+clone repo:
+  git clone git@github.com:patilkr/userCSP.git
+
+  git status
+
+git commit -a
+
+OR 
+
+git commit -m 'updated ...'
+
+git push origin master
+
