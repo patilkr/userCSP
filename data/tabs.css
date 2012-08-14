@@ -2,6 +2,7 @@ div.content {
     border: #48f solid 3px;
     clear: left;
     padding: 1em;
+    line-height:125%; /* @Kailas: To increase new line spacing*/
 }
 
 ol#toc {

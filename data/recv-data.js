@@ -1,3 +1,17 @@
+// // Helper function to set the Name of selected domain
+function setSelectedDomain(activeDomain) {
+    var dName = document.getElementById("domainName");  
+    for(var i=0; i<dName.options.length; i++) {
+         if (activeDomain.indexOf(dName.options[i].value) != -1) {
+             dump("\n !!! Found activeWindow Domain. Changing it");
+             dName.selectedIndex = i;
+             break;
+         }
+    } // end of FOR loop
+
+} // end of setSelectedDomain
+
+
 // Receive the list of domain names from main add-on
 addon.port.on("domainNames", function (arg) {  
    //addon.port.emit("text-entered", arg);
@@ -30,6 +44,26 @@ addon.port.on("addHostName", function (hName) {
     // Empty previous list
     selectDomainList.options.length = 0;
 
+
+     // ---//Clear UI Elements as well--------------------
+    //1. Reset All tab contents
+    document.getElementById("websiteCompleteCSP").innerHTML = "";
+    document.getElementById("userCompleteCSP").innerHTML = "";
+    document.getElementById("combinedStrictCSP").innerHTML = "";
+    document.getElementById("combinedLooseCSP").innerHTML = "";
+    document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+    document.getElementById("inlineScriptRuleBtnFalse").checked = true;
+    document.getElementById("inlineEvalRuleBtnFalse").checked = true;
+
+    //2. Clear Directive contents
+    document.getElementById("rule1").value = "";
+    var listW = document.getElementById("rule1WebsiteList");
+    listW.options.length = 0; // clear website list
+    var listU = document.getElementById("rule1UserList");
+    listU.options.length = 0; // clear user list
+    // -----------------------------------------------------
+
+
     var anOption = document.createElement("OPTION");
     anOption.text = "*(Every Website)";
     anOption.value = "all";    
@@ -41,11 +75,16 @@ addon.port.on("addHostName", function (hName) {
          userCSPArray = {};
     } 
     if (!userCSPArray[anOption.value]) {
-        userCSPArray[anOption.value] = new Array(11);
+        userCSPArray[anOption.value] = new Array(15);
         
         // make bydefault state to Enable
-        userCSPArray[anOption.value][10] = true; 
-        document.getElementById("cspRuleEnable").checked = true;
+        userCSPArray[anOption.value][11] = 1; 
+        document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+
+        // Bydefault disallow inline scripts
+        userCSPArray[anOption.value][12] = false;
+        // Bydefault disallow inline evals
+        userCSPArray[anOption.value][14] = false;
 
         dump("\n userCSP arrary is created for domain="+anOption.value);
     }   
@@ -60,11 +99,16 @@ addon.port.on("addHostName", function (hName) {
             
             // Add an entry into global userCSPArray if it doesn't exists
 	          if (!userCSPArray[anOption.value]) {
-		            userCSPArray[anOption.value] = new Array(11);
+		            userCSPArray[anOption.value] = new Array(15);
 
                 // make bydefault state to Enable
-                userCSPArray[anOption.value][10] = true; 
-                document.getElementById("cspRuleEnable").checked = true;
+                userCSPArray[anOption.value][11] = 1; 
+                document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+
+                // Bydefault disallow inline scripts
+                userCSPArray[anOption.value][12] = false;
+                // Bydefault disallow inline evals
+                userCSPArray[anOption.value][14] = false;
 		            
                 dump("\n userCSP arrary is created for domain="+anOption.value);
 	          }  
@@ -91,7 +135,7 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
         userCSPArray = {};
     } 
     if (!userCSPArray["all"]) {
-        userCSPArray["all"] = new Array(11);
+        userCSPArray["all"] = new Array(15);
     }
 
     if (!websiteCSPArray || websiteCSPArray == null) {
@@ -102,16 +146,21 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
     var dNames = document.getElementById("domainName");
     dump("\n number of domains in the list are : "+dNames.options.length);
 
+
+    // Set Active Window as selected domain
+    dump("\n Active Domain in the user list should be = "+dListData.activeDomain);
+       setSelectedDomain(dListData.activeDomain);   
+
     for (var i=0; i<dNames.options.length; i++) {
         if (websiteListData[dNames.options[i].value]) {
-            websiteCSPArray[dNames.options[i].value] = new Array(10);
+            websiteCSPArray[dNames.options[i].value] = new Array(11);
            // dump("\n@@ Website CSP Array is created for : "+dNames.options[i].value);
 
             // store website defined CSP in global table 
             websiteCSPAll[dNames.options[i].value] = websiteCSPList[dNames.options[i].value];
            // dump("\n Website defined CSP = " + websiteCSPAll[dNames.options[i].value]);
 
-            for (var k=0; k<10; k++) {
+            for (var k=0; k<11; k++) {
                 websiteCSPArray[dNames.options[i].value][k] = websiteListData[dNames.options[i].value][k];
                // dump("\n @@@ WebsiteCSPArray[][k] = "+websiteCSPArray[dNames.options[i].value][k]);
             } // end of FOR Loop
@@ -120,14 +169,14 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
         // Record userCSP in Database
         if (userCSPList[dNames.options[i].value]) {
             userCSPAll[dNames.options[i].value] = userCSPList[dNames.options[i].value][0];
-            dump("\n User Specified CSP I sent is = " + userCSPList[dNames.options[i].value][0])
+            dump("\n User Specified CSP I sent is = " + userCSPList[dNames.options[i].value][0]);
             dump("\n User Specified CSP I received is = " + userCSPAll[dNames.options[i].value]);
         }
         // --TODO -- (update userCSP if user modified rules for domain)
 
 	      dump("\n Restoring CSP rules of Domain:"+dNames.options[i].value);
 	      if (dListData[dNames.options[i].value]) {
-	          for (var j=0; j<10; j++) {
+	          for (var j=0; j<15; j++) {
                 // Restore userCSP array from Database
 		            if (dListData[dNames.options[i].value][j] == "null") {
 		                userCSPArray[dNames.options[i].value][j] = "";
@@ -137,13 +186,22 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
 		            }
 	          } // end of FOR loop "j"
 
-	          if(dListData[dNames.options[i].value][10].indexOf("true") != -1) {
-		            userCSPArray[dNames.options[i].value][10] = true;
-	          } else {
-		            userCSPArray[dNames.options[i].value][10] = false;
-	          }
-	          dump("\n Restored: "+userCSPArray[dNames.options[i].value][10]);
+            
+            // userCSPArray[dNames.options[i].value][11] = dListData[dNames.options[i].value][11];
+            // userCSPArray[dNames.options[i].value][12] = dListData[dNames.options[i].value][12];
+            // userCSPArray[dNames.options[i].value][13] = userCSPList[dNames.options[i].value][3];
+            
+
+	          // if(dListData[dNames.options[i].value][11].indexOf("true") != -1) {
+		        //     userCSPArray[dNames.options[i].value][11] = true;
+	          // } else {
+		        //     userCSPArray[dNames.options[i].value][11] = false;
+	          // }
+
+	           // dump("\n Restored: "+userCSPArray[dNames.options[i].value][11]);
+
 	      } // endof IF dListData Loop
+
     } // end of FOR loop "i"
     
 
@@ -151,6 +209,14 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
     restoreCSPRules();
 
 }); // end of "showCSPRules" event listener
+
+
+// Change Seclected Domain to domain names drop down box
+addon.port.on("changeActiveDomain", function (activeDomain) {  
+    try {
+        setSelectedDomain(activeDomain);
+    } catch (e) { dump("\n @@WARNING!! default.js is not yet initialized. So setSlectedDomain Doesn't exists");}
+});
 
 // Remove hostname recevied from main-add to domain names drop down box
 addon.port.on("rmHost", function (hName) {  
@@ -172,7 +238,11 @@ addon.port.on("setCombineStrict", function (strictCSP, webDomain) {
     var selectedDomain = getSelectedDomain();
    
     if (selectedDomain.match(webDomain) && (previousTabId == -1)) {
-        document.getElementById("combinedWUCSP").innerHTML = strictCSP;
+        // Display it in UI
+        document.getElementById("combinedStrictCSP").innerHTML = strictCSP;
+        
+        // Store it in userCSP Array
+        userCSPArray[selectedDomain][13] = strictCSP;
     }
     
 });

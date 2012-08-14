@@ -19,6 +19,11 @@
 // user/websiteCSPArray[domainName][7] = font-src
 // user/websiteCSPArray[domainName][8] = xhr-src
 // user/websiteCSPArray[domainName][9] = frame-ancestors
+// user/websiteCSPArray[domainName][10] = report-uri
+// userCSPArray[][11] = website/user/combinS/combineL rules
+// userCSPArray[][12] = inline Script on/off
+// userCSPArray[][13] = combined Strict/Loose rules
+// userCSPArray[][14] = inline Eval on/off
 
 var userCSPArray= {}; // stores user defined CSP in array format
 var userCSPAll = {}; // stores user defined CSP without array format
@@ -86,9 +91,15 @@ var previousTabId = 0; // Stores value of previous tab id
          getforAll();
       </script>
       <br />
-     <label>User Rules For Selected Domain </label>
-     <input type="radio" Name="stateGroup" id="cspRuleEnable" value="Enable"  onclick="swapCSPStateForDomain(this);"> <label for="cspRuleEnable"> Enable </label>
-       <input type="radio" Name="stateGroup" id="cspRuleDisable" value="Disable" onclick="swapCSPStateForDomain(this);"> <label for="cspRuleDisable"> Disable </label>
+      <!-- <table border="2" cellpadding="5"> -->
+ <!--      <tr>   -->
+ <!--       <td> <label>User Rules For Selected Domain </label> </td> -->
+ <!--       <td> -->
+ <!--       <input type="radio" Name="stateGroup" id="cspRuleEnable" value="Enable"  onclick="swapCSPStateForDomain(this);"> <label for="cspRuleEnable"> Enable </label> -->
+ <!--       <input type="radio" Name="stateGroup" id="cspRuleDisable" value="Disable" onclick="swapCSPStateForDomain(this);"> <label for="cspRuleDisable"> Disable </label></td> -->
+ <!-- </tr>       -->
+       
+ <!--         </table> -->
 </p>
 
 <div class="content">
@@ -106,6 +117,7 @@ var previousTabId = 0; // Stores value of previous tab id
     <li id="Font-Src"><a  href="#" onclick="changeDirective(this, 7);">font-src</a></li>
     <li id="Xhr-Src"><a  href="#" onclick="changeDirective(this, 8);">xhr-src</a></li>
     <li id="Frame-Ancestors"><a  href="#" onclick="changeDirective(this, 9);">frame-ancestors</a></li>
+    <li id="Report-uri"><a  href="#" onclick="changeDirective(this, 10);">Report-uri</a></li>
 </ol>
 
      <!-- <select id="cspDirectives" style="width:220px" onchange="storeDirectiveData(this);"> -->
@@ -122,10 +134,12 @@ var previousTabId = 0; // Stores value of previous tab id
     <!-- </select> -->
 
     <br />
-
+    <br />
      <!-- ----------------CSP Directives Tab UI ----------------------->
     <div id="dynamicDirDiv">
-      <p><label for='rule1'>Enter Rule: </label> <input type='text' id='rule1' value=''  /> &nbsp;&nbsp; <input type='button' id='addRule1btn' value='Add' onclick='listenData(event);' /></p>
+      <p><label for='rule1'>Enter Rule: </label> <input type='text' id='rule1' value='' /> &nbsp;&nbsp; <input type='button' id='addRule1btn' value='Add' onclick='listenData(event);' /> <br />
+        <label id='errorMsg' ></label>
+      </p>
 
       <p><table width='100%' border='0' cellspacing='0' cellpadding='0'>
           <tr> <td align='center'> 
@@ -144,30 +158,66 @@ var previousTabId = 0; // Stores value of previous tab id
           <tr>  <td> &nbsp;</td>  <td> &nbsp;</td>   </tr>
       </table> </p>
 
-      <p align='right'><input type='button' id='applyRule1btn' value='Apply User Rules' onclick='applyUserRules()' /></p>
+      <p align='right'><input type='button' id='applyRule1btn' value='Save User Rules' onclick='applyUserRules()' /></p>
     </div>
 
 
     <!-- ---------------- All Tab UI ------------------------------>
     <div id="dynamicAllTabDiv" >
       <br />
-      <label for='websiteCompleteCSP'><b>Website CSP Rules:</b> </label>
-      <label id='websiteCompleteCSP'></label>  <br /><br />   
-      <label for='userCompleteCSP'><b>User CSP Rules:</b> </label>    
-      <label id='userCompleteCSP'></label> <br /><br />  
-      <label for='combinedWUCSP'><b>Combined Rules:</b> </label>  
-      <label id='combinedWUCSP'></label> <br /><br />  
-      <input type='radio' Name='group1' id='combineStrictRule1btn' value='S' onclick='combineStrict();' /> 
-      <label for='combineStrictRule1btn'> Combine Strict </label> 
-      <input type='radio' Name='group1' id='combineLooseRule1btn' value='L' onclick='combineLoose();' />
-      <label for='combineLooseRule1btn'> Combine Loose </label> 
+      <input type='radio' Name='group1' id='selectWebsiteCSPRuleBtn' value='W' onclick='rulesToApply(1);' />
+      <label for='selectWebsiteCSPRuleBtn'><b>Website CSP Rules:</b> </label> <br />
+      <label id='websiteCompleteCSP' style="color:blue;"></label>  <br /><br />   
+      
+      <input type='radio' Name='group1' id='selectUserCSPRuleBtn' value='U' onclick='rulesToApply(2);' />
+      <label for='selectUserCSPRuleBtn'><b>User CSP Rules:</b> </label>    <br />
+      <label id='userCompleteCSP' style="color:blue;"></label> <br /><br />  
+
+      <!-- <input type="text" id='userCompleteCSP' value="" style="border:none;background-color: #DBEAF5;" size="500" /> -->
+      
+      <!-- Inline Script, Eval Options  -->
+      &nbsp;&nbsp;&nbsp;<label>Do you want to allow Inline Scripts? </label>
+      <input type='radio' Name='group3' id='inlineScriptRuleBtnTrue' value='Y' onclick='inlineScriptRule(1);' /> <label for='inlineScriptRuleBtnTrue'> Yes </label>  &nbsp;&nbsp;&nbsp;
+      <input type='radio' Name='group3' id='inlineScriptRuleBtnFalse' value='N' onclick='inlineScriptRule(0);' /> <label for='inlineScriptRuleBtnFalse'> No </label>
+
+      <br />
+      <!--  Eval Options  -->
+      &nbsp;&nbsp;&nbsp;<label>Do you want to allow Inline Eval()? &nbsp; </label>
+      <input type='radio' Name='group4' id='inlineEvalRuleBtnTrue' value='Y' onclick='inlineEvalRule(1);' /> <label for='inlineEvalRuleBtnTrue'> Yes </label>  &nbsp;&nbsp;&nbsp;
+      <input type='radio' Name='group4' id='inlineEvalRuleBtnFalse' value='N' onclick='inlineEvalRule(0);' /> <label for='inlineEvalRuleBtnFalse'> No </label>
+
+      <br /> <br />
+      <label for='selectCombinedCSPRuleBtn'><b>Combined Rules:</b> </label>   <br />
+      <label id='combinedWUCSP' style="color:blue;"></label> <!-- Unused -->
+
+      
+      <!-- &nbsp;&nbsp;&nbsp;<input type='radio' Name='group2' id='combineStrictRule1btn' value='S' onclick='combineStrict();' />  -->
+      <input type='radio' Name='group1' id='selectCombinedSCSPRuleBtn' value='C' onclick='rulesToApply(3);' />
+      <label for='selectCombinedSCSPRuleBtn'> Combine Strict </label> <br />
+      <label id='combinedStrictCSP' style="color:blue;"> </label> <br /><br />
+      
+      <!-- &nbsp;&nbsp;&nbsp;<input type='radio' Name='group2' id='combineLooseRule1btn' value='L' onclick='combineLoose();' /> -->
+      <input type='radio' Name='group1' id='selectCombinedLCSPRuleBtn' value='C' onclick='rulesToApply(4);' />
+      <label for='selectCombinedLCSPRuleBtn'> Combine Loose </label> <br />
+      <label id='combinedLooseCSP' style="color:blue;"> </label> <br /> <br />
+
+
       <p align='right'>  
-        <input type='button' id='applyCombinedRule1btn' value='Apply Combined Rules' onclick='applyCombinedRules();' /> </p>
+        <input type='button' id='applyCombinedRule1btn' value='Save' onclick='applyCombinedRules();' /> </p>
+
     </div>
      
+
     <script>
       var AllTabDIV = document.getElementById("dynamicAllTabDiv");
-      AllTabDIV.style.display ='none';      
+      AllTabDIV.style.display ='none'; 
+      // Set Error msg color to Red
+      document.getElementById("errorMsg").style.color= "red";
+
+      // Set default state  in All Tab UI
+      document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+      document.getElementById("inlineScriptRuleBtnFalse").checked = true;
+      document.getElementById("inlineEvalRuleBtnFalse").checked = true;
     </script>
 
 </div> <!-- end of DIV class content -->

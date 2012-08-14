@@ -7,33 +7,99 @@ function getSelectedDomain() {
 } // end of "getSelectedDomain" function
 
 
-// Swap the state of the User CSP Rules button:
-// Store the result in global table
-function swapCSPStateForDomain(cspBtn) {
-    var btnVal = cspBtn.value;    
-    dump("\n this = "+btnVal);
+
+// Function to store rules to apply:
+// 1: Website rules
+// 2: User CSP rules
+// 3: Combine Strict CSP rules
+// 4: Combine Loose CSP rules
+function rulesToApply(id) {
+    dump("\n\n Rules to apply: "+ id);
     
     var selectedDomain = getSelectedDomain();
-
-    
-     dump("\n selected Domain name = "+selectedDomain);
-
+    dump("\n selected Domain name = "+selectedDomain);
     if (!userCSPArray[selectedDomain]) {
         dump("\n userCSPArray doesn't exists. So I need to create it ");
-        userCSPArray[selectedDomain] = new Array(11);
+        userCSPArray[selectedDomain] = new Array(15);
         dump("\n userCSP arrary is created ");
     }
-    // I used 11th index for enable and disable button state
-    if (btnVal.indexOf("Disable") != -1) {
-        dump("\n inside disabled");
-        userCSPArray[selectedDomain][10] = false;               
-    } else {
-        dump("\n inside enableded");
-        userCSPArray[selectedDomain][10] = true;
+
+    userCSPArray[selectedDomain][11] = id;
+
+    if (id == 3) {
+        combineStrict();
+    } else if (id == 4) {
+        combineLoose();
     }
+
+} // end of function rulesToApply()
+
+
+// Swap the state of the User CSP Rules button:
+// Store the result in global table
+// function swapCSPStateForDomain(cspBtn) {
+//     var btnVal = cspBtn.value;    
+//     dump("\n this = "+btnVal);
+    
+//     var selectedDomain = getSelectedDomain();
+
+    
+//      dump("\n selected Domain name = "+selectedDomain);
+
+//     if (!userCSPArray[selectedDomain]) {
+//         dump("\n userCSPArray doesn't exists. So I need to create it ");
+//         userCSPArray[selectedDomain] = new Array(15);
+//         dump("\n userCSP arrary is created ");
+//     }
+//     // I used 11th index for enable and disable button state
+//     if (btnVal.indexOf("Disable") != -1) {
+//         dump("\n inside disabled");
+//         userCSPArray[selectedDomain][11] = false;               
+//     } else {
+//         dump("\n inside enableded");
+//         userCSPArray[selectedDomain][11] = true;
+//     }
   
 
-} //end of "swapCSPStateForSelectedDomain" function
+// } //end of "swapCSPStateForSelectedDomain" function
+
+
+// Function to store inline Script Decision
+function inlineScriptRule(state) {
+    dump("\n Inline Script should be (0=false, 1 = true)= "+state);
+    
+    var selectedDomain = getSelectedDomain();
+    try {
+        if (!userCSPArray || !userCSPArray[selectedDomain]) {
+            userCSPArray[selectedDomain] = new Array(15);
+        }
+    } catch (e) {}
+
+        if (state)
+            userCSPArray[selectedDomain][12] = true;
+        else
+            userCSPArray[selectedDomain][12] = false;
+
+} // end of inlineScriptRule() funciton
+
+
+// Function to store inline Eval Decision
+function inlineEvalRule(state) {
+    dump("\n Inline Eval should be (0=false, 1 = true)= "+state);
+    
+    var selectedDomain = getSelectedDomain();
+    try {
+        if (!userCSPArray || !userCSPArray[selectedDomain]) {
+            userCSPArray[selectedDomain] = new Array(15);
+        }
+    } catch (e) {}
+
+        if (state)
+            userCSPArray[selectedDomain][14] = true;
+        else
+            userCSPArray[selectedDomain][14] = false;
+
+} // end of inlineEvalRule() funciton
 
 
 // Helper function to remove Spaces From a Text Field Input
@@ -50,43 +116,95 @@ function insertItemInList(str) {
     selectList.add(anOption);
 }
 
+
 // Listen for user input values 
 function listenData(evt) {  
     // Dynamically add OPTION element to SELECT Tag
     var text = document.getElementById("rule1").value;
     
     // Remove spaces from a text field. 
-   // text = removeSpaces(text);
+    // text = removeSpaces(text);
+
+    // Clear Previous Error msg if any
+    document.getElementById("errorMsg").innerHTML = "";
 
     if (text) {
         //--------------------------------------------------
         // Filtering of input according to W3C CSP standard
         var flag = true;
-        if (text === "'none'" || text ==="none") {
+        if (text === "'none'") {            
             insertItemInList(text);
             document.getElementById("rule1").value = ""; 
             return;
         }
-        if (text === "'self'" || text ==="self") {//ok
+        if (text ==="none") {
+            insertItemInList("'none'");
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+        if (text === "*") {
             insertItemInList(text);
             document.getElementById("rule1").value = ""; 
             return;
         }
-        var tokens = text.split(/\s+/);
+        if (text === "'self'") {//ok
+            insertItemInList(text);
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+        if (text ==="self") {
+            insertItemInList("'self'");
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+
+        var myRegexp = new RegExp('^[a-z0-9 _.:/*\']*$', 'i');
+        // any number of a-z 0-9 spaces underscore . : * \ 
+        // is allowed in I/P string. 'i' is used to ignore case. 
+        // ^ means beginning of string and $ means end of string
+        // * means any number of characters in string
+        
+        var tokens = text.split(' ');
         for (var i in tokens) {
-            if (tokens[i] === "") continue;
+            if (tokens[i] === "" || tokens[i] === " ") continue;
             if (tokens[i] === "'none'" || tokens[i] ==="none") {
                 insertItemInList(tokens[i]);
+                continue;
+            }
+            if (tokens[i] === "*") {
+                insertItemInList(text);
+                document.getElementById("rule1").value = ""; 
                 continue;
             }
             if (tokens[i] === "'self'" || tokens[i] ==="self") {
                 insertItemInList(tokens[i]);
                 continue;
-            }
-            if (tokens[i].indexOf('.') != -1)
-                insertItemInList(tokens[i]);
-            else window.alert("Unexpected value:"+tokens[i]);
-        }
+            }   
+            if (text.match(myRegexp)) {       
+                var wildcardIndex = tokens[i].indexOf('*');
+                if (wildcardIndex != -1) { //hostname wildcard check
+                    if (wildcardIndex != 0) {
+                        if (tokens[i][wildcardIndex-1] != ':') {
+                            document.getElementById("errorMsg").innerHTML = " Invalid Input:" + tokens[i];
+                           // window.alert("Unexpected value:"+tokens[i]);
+                            continue;
+                        }
+                    }
+                }
+                var colonIndex = tokens[i].indexOf(':');
+                var dotIndex = tokens[i].indexOf('.');
+                if ((colonIndex != -1) && (dotIndex < colonIndex)) {
+                    insertItemInList(tokens[i]);
+                    continue;
+                }
+                if (tokens[i].indexOf('.') != -1) {
+                    insertItemInList(tokens[i]);
+                } else {
+                    document.getElementById("errorMsg").innerHTML = " Invalid Input:" + tokens[i];
+                }
+            } // end of .match IF loop                   
+         else document.getElementById("errorMsg").innerHTML = " Invalid Input:" + tokens[i];
+        } // end of FOR loop
         //-----------------------------------------------------
        
         // Clear the text from Input field
@@ -170,8 +288,10 @@ function getDomainChoice(evt) {
         // Currently selected Tab is "All"
         oldDomainValue = selectedDomain;
 
-        // remove text from label named "combineWUCSP"
-        setLabelToEmptyString("combinedWUCSP");
+        // remove text from label named "combinedStrictCSP" 
+        setLabelToEmptyString("combinedStrictCSP");
+        // remove text from label named "combinedLooseCSP"
+        setLabelToEmptyString("combinedLooseCSP");
 
         // load website CSP
         if (websiteCSPAll  ||  websiteCSPAll != null) {
@@ -206,10 +326,15 @@ function getDomainChoice(evt) {
 
         // 3. Make sure global table entry existis. If not then create it.
         if (!userCSPArray[selectedDomain]) {
-            userCSPArray[selectedDomain] = new Array(11);
+            userCSPArray[selectedDomain] = new Array(15);
 
             // make bydefault state to Enable
-            userCSPArray[selectedDomain][10] = true; 
+            userCSPArray[selectedDomain][11] = 1;
+
+            // bydefaule disallow inline scripts
+            userCSPArray[selectedDomain][12] = false;
+            // bydefaule disallow inline eval
+            userCSPArray[selectedDomain][14] = false;
 
             dump("\n new userCSP arrary is created for = "+selectedDomain);
         }   
@@ -242,13 +367,37 @@ function getDomainChoice(evt) {
 
     dump("\nI am going in to enable or disable state");
     // 7. Change user Rule state for domain (Enable/Disable)    
-    if (!userCSPArray[selectedDomain][10]) {
-        dump("\nchange rule state to disable");
-        document.getElementById("cspRuleDisable").checked = true;
-    } else {
-        dump("\nchange rule state to enbale");
-        document.getElementById("cspRuleEnable").checked = true;
-    }
+    try {
+        if (!userCSPArray[selectedDomain][11])
+            userCSPArray[selectedDomain][11] = 1;
+    }catch (e) { userCSPArray[selectedDomain][11] = 1; }
+
+    switch (userCSPArray[selectedDomain][11]) {
+    case 1: // website Rules
+        document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+        break;
+    case 2: // user Rules
+        document.getElementById("selectUserCSPRuleBtn").checked = true;
+        break;
+    case 3: // Combine Strict Rules
+        document.getElementById("selectCombinedSCSPRuleBtn").checked = true;
+        break;
+    case 4: // Combine Loose Rules
+        document.getElementById("selectCombinedLCSPRuleBtn").checked = true;
+        break;
+    default:
+        document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+        break;
+    } // end of switch
+
+    // if (!userCSPArray[selectedDomain][11]) {
+    //     dump("\nchange rule state to disable");
+    //     document.getElementById("cspRuleDisable").checked = true;
+    // } else {
+    //     dump("\nchange rule state to enbale");
+    //     document.getElementById("cspRuleEnable").checked = true;
+    // }
+
 
 } // end of getDomainChoice() Function
 
@@ -279,11 +428,16 @@ function helperToStore(domainName) {
         userCSPArray = {};
     } 
     if (!userCSPArray[domainName]) {
-        userCSPArray[domainName] = new Array(11);
+        userCSPArray[domainName] = new Array(15);
 
         // make bydefault state to Enable
-        userCSPArray[domainName][10] = true; 
-        document.getElementById("cspRuleEnable").checked = true;
+        userCSPArray[domainName][11] = 1; 
+        document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+        
+        // bydefault disallow inline scripts
+        userCSPArray[selectedDomain][12] = false;
+        // bydefault disallow inline evals
+        userCSPArray[selectedDomain][14] = false;
 
         dump("\n userCSP arrary is created ");
     }      
@@ -390,6 +544,12 @@ function changeDirectiveClass(id, flag) {
         else
             document.getElementById("Frame-Ancestors").className = "current";
         break;
+    case 10:
+        if (!flag) 
+            document.getElementById("Report-uri").className = "";
+        else
+            document.getElementById("Report-uri").className = "current";
+        break;
     default:
         if (!flag) 
             document.getElementById("All-policies").className = "";
@@ -476,8 +636,10 @@ function changeDirective(event, curDirID) {
 
         var selectedDomain = getSelectedDomain();
 
-        // remove text from label named "combineWUCSP"
-        setLabelToEmptyString("combinedWUCSP");
+        // remove text from label named "combinedStrictCSP" 
+        setLabelToEmptyString("combinedStrictCSP");
+        // remove text from label named "combinedLooseCSP"
+        setLabelToEmptyString("combinedLooseCSP");
 
         // load website CSP
         if (websiteCSPAll  ||  websiteCSPAll != null) {
@@ -500,6 +662,40 @@ function changeDirective(event, curDirID) {
             } else { setLabelToEmptyString("userCompleteCSP"); }
         } else { setLabelToEmptyString("userCompleteCSP"); }
 
+
+        // Set true to Website/User/Combine CSP rule
+        switch(userCSPArray[selectedDomain][11]) {
+        case 1: // Website Rules
+            document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+            break;
+        case 2: // USer Rules
+            document.getElementById("selectUserCSPRuleBtn").checked = true;
+            break;
+        case 3: // Combine Strict Rules
+            document.getElementById("selectCombinedSCSPRuleBtn").checked = true;
+            document.getElementById("combinedStrictCSP").innerHTML = userCSPArray[selectedDomain][13];
+            break;
+        case 4: // Combine Loose Rules
+            document.getElementById("selectCombinedLCSPRuleBtn").checked = true;
+            document.getElementById("combinedLooseCSP").innerHTML = userCSPArray[selectedDomain][13];
+            break;
+        default:
+            document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+            break;
+        } // end of switch
+
+        // Inline Script check
+        if (userCSPArray[selectedDomain][12] == true || userCSPArray[selectedDomain][12] == "true") {
+            document.getElementById("inlineScriptRuleBtnTrue").checked = true;          } else {
+            document.getElementById("inlineScriptRuleBtnFalse").checked = true;                      
+        }
+        // inline eval check
+        if (userCSPArray[selectedDomain][14] == true || userCSPArray[selectedDomain][14] == "true") {
+            document.getElementById("inlineEvalRuleBtnTrue").checked = true;          } else {
+            document.getElementById("inlineEvalRuleBtnFalse").checked = true;                      
+        }
+
+        // End of dynamicAllTabDiv
     } else {
         // use change directive tab
         helperToChangeTab(event, curDirID);
@@ -594,6 +790,7 @@ function applyUserRules() {
 function restoreCSPRules() {
     var selectedDomain = getSelectedDomain();
    // var directiveList = document.getElementById("cspDirectives");
+
     var userList = document.getElementById("rule1UserList");
     var websiteList = document.getElementById("rule1WebsiteList");
 
@@ -607,7 +804,7 @@ function restoreCSPRules() {
 
     // 3. Make sure global table entry existis. If not then create it.
      if (!userCSPArray[selectedDomain]) {
-        userCSPArray[selectedDomain] = new Array(11);
+        userCSPArray[selectedDomain] = new Array(15);
     }   
     // 4. Get the index of selected Directive
     // var index = directiveList.selectedIndex;
@@ -631,16 +828,59 @@ function restoreCSPRules() {
      }
     //---------------------------------------------------------------
 
-    dump("\nI am going in to enable or disable state");
-
     // 7. Change user Rule state for domain (Enable/Disable)    
-    if (!userCSPArray[selectedDomain][10]) {
-        dump("\nchange rule state to disable");
-        document.getElementById("cspRuleDisable").checked = true;
-    } else {
-        dump("\nchange rule state to enbale");
-        document.getElementById("cspRuleEnable").checked = true;
+    dump("\nI am going in to enable or disable state");
+    try {
+        if (!userCSPArray[selectedDomain][11])
+            userCSPArray[selectedDomain][11] = 1;
+    }catch (e) { userCSPArray[selectedDomain][11] = 1; }
+
+    switch (userCSPArray[selectedDomain][11]) {
+    case 1: // Website Rules
+        document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+        break;
+    case 2: // USer Rules
+        document.getElementById("selectUserCSPRuleBtn").checked = true;
+        break;
+    case 3: // Combine Strict Rules
+        document.getElementById("selectCombinedSCSPRuleBtn").checked = true;
+        break;
+    case 4: // Combine Loose Rules
+        document.getElementById("selectCombinedLCSPRuleBtn").checked = true;
+        break;
+    default:
+        document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+        break;
+    } // end of switch
+
+    // Restore "ALL" Tab contents
+    if (typeof(websiteCSPAll[selectedDomain]) != undefined)
+        document.getElementById("websiteCompleteCSP").innerHTML = websiteCSPAll[selectedDomain];
+    else
+        document.getElementById("websiteCompleteCSP").innerHTML = "";
+  
+    if(typeof(userCSPAll[selectedDomain]) != undefined)
+        document.getElementById("userCompleteCSP").innerHTML =  userCSPAll[selectedDomain];
+    else
+        document.getElementById("userCompleteCSP").innerHTML = "";
+
+    if (typeof(userCSPArray[selectedDomain][13]) != undefined)
+        document.getElementById("combinedStrictCSP").innerHTML = userCSPArray[selectedDomain][13];
+    else
+        document.getElementById("combinedStrictCSP").innerHTML = "";
+    
+    // Restore Inline Script check
+    if (userCSPArray[selectedDomain][12] == true || userCSPArray[selectedDomain][12] == "true") {
+        document.getElementById("inlineScriptRuleBtnTrue").checked = true;          } else {
+        document.getElementById("inlineScriptRuleBtnFalse").checked = true;                      
     }
+    // inline eval check
+    if (userCSPArray[selectedDomain][14] == true || userCSPArray[selectedDomain][14] == "true") {
+        document.getElementById("inlineEvalRuleBtnTrue").checked = true;          } else {
+        document.getElementById("inlineEvalRuleBtnFalse").checked = true;                      
+    }
+
+
 
 } // end of "restoreCSPRules" function
 
@@ -651,7 +891,7 @@ function restoreCSPRules() {
 function policyToPrint(cspRuleArray,selectedDomain) {
     var Result = "";
 
-    for(j=0; j<10; j++) {
+    for(var j=0; j<11; j++) {
         switch(j) {
         case 0:
             if (cspRuleArray[selectedDomain][j] )
@@ -721,6 +961,13 @@ function policyToPrint(cspRuleArray,selectedDomain) {
                 else
                     Result = "frame-ancestors " + cspRuleArray[selectedDomain][j]+"; ";
             } break;
+        case 10:
+            if (cspRuleArray[selectedDomain][j] ) {
+                if (Result != "")
+                    Result += "report-uri "+cspRuleArray[selectedDomain][j]+"; ";
+                else
+                    Result = "report-uri " + cspRuleArray[selectedDomain][j]+"; ";
+            } break;            
         } // end of switch(j) Loop
     } // end of For "j" Loop
 
@@ -729,148 +976,121 @@ function policyToPrint(cspRuleArray,selectedDomain) {
 } //end of "policyToPrint" Function
 
 
-
-function loosePolicyToPrint(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain) {
+//helper function to comine policy loosely
+function combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, tempStr) {
     var Result = "";
     var flag = false;
+    
+    if (!tempUserCSPArray[tempSelectedDomain][j])
+        tempUserCSPArray[tempSelectedDomain][j] = "";
 
-    for(j=0; j<10; j++) {
+    if (!tempWebsiteCSPArray[tempSelectedDomain][j])
+        tempWebsiteCSPArray[tempSelectedDomain][j] = "";
+
+    // compare with * in userCSP
+    if ((tempUserCSPArray[tempSelectedDomain][j].indexOf("*") != -1) && (tempUserCSPArray[tempSelectedDomain][j].length < 4)) {
+        Result += tempStr + tempUserCSPArray[tempSelectedDomain][j]+"; ";
+        return Result;
+    }
+
+    // compare with * in websiteCSP
+    if ((tempWebsiteCSPArray[tempSelectedDomain][j].indexOf("*") != -1) && (tempUserCSPArray[tempSelectedDomain][j].length < 4)) {
+        Result += tempStr + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
+        return Result;
+    }
+  
+
+    // if both are 'self'
+    if ((tempWebsiteCSPArray[tempSelectedDomain][j] == "'self'" && tempUserCSPArray[tempSelectedDomain][j] == "'self' ") || (tempWebsiteCSPArray[tempSelectedDomain][j] == "'self'" && tempUserCSPArray[tempSelectedDomain][j] == "self ")) {
+        Result += tempStr + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
+        return Result;
+    }
+
+    // if usercsp = none
+    if ((tempUserCSPArray[tempSelectedDomain][j] == "none " || tempUserCSPArray[tempSelectedDomain][j] == "'none' " ) && (tempWebsiteCSPArray[tempSelectedDomain][j]  || (tempWebsiteCSPArray[tempSelectedDomain][j] != "") ) ) {
+        Result += tempStr + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
+        return Result;
+    }
+
+    // if website csp = none
+    if ((tempWebsiteCSPArray[tempSelectedDomain][j] == "none" || tempWebsiteCSPArray[tempSelectedDomain][j] == "'none'") && ((tempUserCSPArray[tempSelectedDomain][j]) || (tempUserCSPArray[tempSelectedDomain][j] != "" ))) {
+        Result += tempStr + tempUserCSPArray[tempSelectedDomain][j]+"; ";
+        return Result;
+    }
+
+    // Otherwise take directives from both policies
+    if (tempUserCSPArray[tempSelectedDomain][j] && tempUserCSPArray[tempSelectedDomain][j] != "") {
+        Result = tempStr + tempUserCSPArray[tempSelectedDomain][j];
+        flag = true;
+    }
+    if (tempWebsiteCSPArray[tempSelectedDomain][j] && tempWebsiteCSPArray[tempSelectedDomain][j] != "") {
+        if (!flag)
+            Result += tempStr + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
+        else
+            Result += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
+        
+        flag = false;
+    }
+
+    if (flag) {
+        Result += ";";
+        flag = false; // reset flag
+    }
+    return Result; 
+
+} // end of combineLooselyHelper() function
+
+// Combine userCSP and website CSP loosely
+function loosePolicyToPrint(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain) {
+    var myResult = "";
+    var flag = false;
+
+    for(var j=0; j<11; j++) {
         switch(j) {
         case 0:
-            if (tempUserCSPArray[tempSelectedDomain][j] && tempUserCSPArray[tempSelectedDomain][j] != "") {
-                Result = "default-src " + tempUserCSPArray[tempSelectedDomain][j];
-                flag = true;
-            }
-            if (tempWebsiteCSPArray[tempSelectedDomain][j] && tempWebsiteCSPArray[tempSelectedDomain][j] != "") {
-                if (!flag)
-                    Result += "default-src " + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                else
-                    Result += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
- 
-                flag = false;
-            }
+            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "default-src ");           
             break;
         case 1:
-            if (tempUserCSPArray[tempSelectedDomain][j] && tempUserCSPArray[tempSelectedDomain][j] != "") {
-                Result += "script-src " + tempUserCSPArray[tempSelectedDomain][j];
-                flag = true;
-            }
-            if (tempWebsiteCSPArray[tempSelectedDomain][j] && tempWebsiteCSPArray[tempSelectedDomain][j] != "") {
-                if (!flag)
-                    Result += "script-src " + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                else
-                    Result += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                flag = false;
-            }            
+            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "script-src ");
             break;
         case 2:
-            if (tempUserCSPArray[tempSelectedDomain][j] && tempUserCSPArray[tempSelectedDomain][j] != "") {
-                Result += "object-src " + tempUserCSPArray[tempSelectedDomain][j];
-                flag = true;
-            }
-            if (tempWebsiteCSPArray[tempSelectedDomain][j] && tempWebsiteCSPArray[tempSelectedDomain][j] != "") {
-                if (!flag)
-                    Result += "object-src " + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                else
-                    Result += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                flag = false;
-            }                        
+            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "object-src ");
             break;
         case 3:
-            if (tempUserCSPArray[tempSelectedDomain][j] && tempUserCSPArray[tempSelectedDomain][j] != "") {
-                Result += "img-src " + tempUserCSPArray[tempSelectedDomain][j];
-                flag = true;
-            }
-            if (tempWebsiteCSPArray[tempSelectedDomain][j] && tempWebsiteCSPArray[tempSelectedDomain][j] != "") {
-                if (!flag)
-                    Result += "img-src " + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                else
-                    Result += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                flag = false;
-            } 
+            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "img-src ");
             break;
         case 4:
-            if (tempUserCSPArray[tempSelectedDomain][j] && tempUserCSPArray[tempSelectedDomain][j] != "") {
-                Result += "media-src " + tempUserCSPArray[tempSelectedDomain][j];
-                flag = true;
-            }
-            if (tempWebsiteCSPArray[tempSelectedDomain][j] && tempWebsiteCSPArray[tempSelectedDomain][j] != "") {
-                if (!flag)
-                    Result += "media-src " + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                else
-                    Result += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                flag = false;
-            } 
+             myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "media-src ");
             break;
         case 5:
-            if (tempUserCSPArray[tempSelectedDomain][j] && tempUserCSPArray[tempSelectedDomain][j] != "") {
-                Result += "style-src " + tempUserCSPArray[tempSelectedDomain][j];
-                flag = true;
-            }
-            if (tempWebsiteCSPArray[tempSelectedDomain][j] && tempWebsiteCSPArray[tempSelectedDomain][j] != "") {
-                if (!flag)
-                    Result += "style-src " + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                else
-                    Result += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                flag = false;
-            } 
-            
+            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "style-src ");
             break;
         case 6:
-             if (tempUserCSPArray[tempSelectedDomain][j] && tempUserCSPArray[tempSelectedDomain][j] != "") {
-                Result += "frame-src " + tempUserCSPArray[tempSelectedDomain][j];
-                flag = true;
-            }
-            if (tempWebsiteCSPArray[tempSelectedDomain][j] && tempWebsiteCSPArray[tempSelectedDomain][j] != "") {
-                if (!flag)
-                    Result += "frame-src " + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                else
-                    Result += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                flag = false;
-            } 
-            
+            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "frame-src ");             
             break;
         case 7:
-            if (tempUserCSPArray[tempSelectedDomain][j] && tempUserCSPArray[tempSelectedDomain][j] != "") {
-                Result += "font-src " + tempUserCSPArray[tempSelectedDomain][j];
-                flag = true;
-            }
-            if (tempWebsiteCSPArray[tempSelectedDomain][j] && tempWebsiteCSPArray[tempSelectedDomain][j] != "") {
-                if (!flag)
-                    Result += "font-src " + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                else
-                    Result += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                flag = false;
-            } 
+            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "font-src ");              
             break;
         case 8:
-            if (tempUserCSPArray[tempSelectedDomain][j] && tempUserCSPArray[tempSelectedDomain][j] != "") {
-                Result += "xhr-src " + tempUserCSPArray[tempSelectedDomain][j];
-                flag = true;
-            }
-            if (tempWebsiteCSPArray[tempSelectedDomain][j] && tempWebsiteCSPArray[tempSelectedDomain][j] != "") {
-                if (!flag)
-                    Result += "xhr-src " + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-
-                else
-                    Result += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                flag = false;
-            } 
+            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "xhr-src ");               
             break;
         case 9:
+             myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "frame-ancestors ");
+            break;
+        case 10:
             if (tempUserCSPArray[tempSelectedDomain][j] && tempUserCSPArray[tempSelectedDomain][j] != "") {
-                Result += "frame-ancestors " + tempUserCSPArray[tempSelectedDomain][j];
+                myResult += "report-uri " + tempUserCSPArray[tempSelectedDomain][j];
                 flag = true;
             }
             if (tempWebsiteCSPArray[tempSelectedDomain][j] && tempWebsiteCSPArray[tempSelectedDomain][j] != "") {
                 if (!flag)
-                    Result += "frame-ancestors " + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
+                    myResult += "report-uri " + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
                 else
-                    Result += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
+                    myResult += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
                 flag = false;
             } 
-            
             break;
+
         } // end of switch(j) Loop
         
         if (flag) {
@@ -880,7 +1100,7 @@ function loosePolicyToPrint(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedD
 
     } // end of For "j" Loop
 
-    return Result;
+    return myResult;
 
 } // end of loosePolicyToPrint() function
 
@@ -908,6 +1128,7 @@ function combineStrict() {
     dump("\n Complete UserCSP = " + userCSPAll[selectedDomain]);
     dump("\n Complete WebsiteCSP = " +websiteCSPAll[selectedDomain]);
    
+    dump("\n Now combining them strictly\n");
     getCombineStrict(websiteCSPAll[selectedDomain], userCSPAll[selectedDomain], selectedDomain);
     
 } // end of combineStrict() function
@@ -917,183 +1138,229 @@ function combineStrict() {
 // Allow if it is allowed ANY ONE  or BOTH
 function combineLoose() {
     var Result = "";
+    var flag = false;
 
     dump("\n Combine Loose is Clicked");
 
     var selectedDomain = getSelectedDomain();
-    if (!userCSPArray[selectedDomain])
-        return;
-    if (!websiteCSPArray[selectedDomain])
+
+    if (!userCSPArray[selectedDomain] && !websiteCSPArray[selectedDomain])
         return;
 
-    Result = loosePolicyToPrint(userCSPArray, websiteCSPArray, selectedDomain);
+    if (!userCSPArray[selectedDomain] && websiteCSPArray[selectedDomain]) {
+        Result = websiteCSPAll[selectedDomain];
+        flag = true;
+    }
+
+    if (!websiteCSPArray[selectedDomain]) {
+        Result = userCSPAll[selectedDomain];
+        flag = true;
+    }
+    if (!flag)
+        Result = loosePolicyToPrint(userCSPArray, websiteCSPArray, selectedDomain);
+
     dump("\n %%Combine Loose CSP Policy = " +Result);
-    document.getElementById("combinedWUCSP").innerHTML = Result;
     
+    // Display combine Policy in UI
+    document.getElementById("combinedLooseCSP").innerHTML = Result;
+    
+    // Store combined policy in userCSPArray
+    userCSPArray[selectedDomain][13] = Result;
+
 } // end of combineLoose() function
 
 
 // This function gets the combined CSP rules for the selected domain and 
 // send it to main add-on to store it in d/b.
 function applyCombinedRules() {
-    dump("\n Apply Combined Rules button clicked");
+    dump("\n Save: Apply Rules button clicked");
 
     var selectedDomain = getSelectedDomain();
-    if (!userCSPArray[selectedDomain])
+
+    var userRules = "";
+    var combinedRules = "";
+
+
+    if (!userCSPArray[selectedDomain]) {
         return;
-
+    }else {
+        if (!userCSPAll[selectedDomain]) {
+            var Result = "";
+            Result = policyToPrint(userCSPArray,selectedDomain);
+            userCSPAll[selectedDomain] = Result;
+        } else { userRules = userCSPAll[selectedDomain]; }
+    }
+     
     try {
-        var cspRules = document.getElementById("combinedWUCSP").innerHTML;
-
-        if (cspRules == null || cspRules == "")
-            return;
-
-        for (var i=0; i<10; i++) {
-            userCSPArray[selectedDomain][i] = combinedCSPFilter(cspRules, i);
-        }
         // send combined rules for the selected domain to store in d/b 
         sendDomainRules(selectedDomain, userCSPArray[selectedDomain]);
+        // ----------------------------------------------------------
+        
+
+        // var cspRules = document.getElementById("combinedWUCSP").innerHTML;
+
+        // if (cspRules == null || cspRules == "")
+        //     return;
+
+        // for (var i=0; i<11; i++) {
+        //    userCSPArray[selectedDomain][i] = combinedCSPFilter(cspRules, i);
+        // }
+        // // send combined rules for the selected domain to store in d/b 
+        // sendDomainRules(selectedDomain, userCSPArray[selectedDomain]);
+
 
     }catch(e){dump("\n\n @@ Error in applyCombinedRules="+e);}
 
 } // end of "applyCombinedRules" function
 
 
-// helper function to "applyCombinedRules"
-// It stores csp policy string into usercspArray format to send to d/b
-function combinedCSPFilter(cspRules, index) {
-switch(index)
-    {
-    case 0:
-        var n = cspRules.search("default-src");
-        if (n != -1) {
-            n += 11;
-            var k = cspRules.indexOf(";", n);
-            if (k != -1) {
-                return cspRules.substring(n, k);
-            } else {
-                return cspRules.substring(n);
-            }
-        } else 
-            return "";
-        break;
-    case 1:
-        var n = cspRules.search("script-src");
-        if (n != -1) {
-            n += 10;
-            var k = cspRules.indexOf(";", n);
-            if (k != -1) {
-                return cspRules.substring(n, k);
-            } else {
-                return cspRules.substring(n);
-            }
-        } else
-            return "";
-        break;
-    case 2:
-        var n = cspRules.search("object-src");
-        if (n != -1) {
-            n += 10;
-            var k = cspRules.indexOf(";", n);
-            if (k != -1) {
-                return cspRules.substring(n, k);
-            } else {
-                return cspRules.substring(n);
-            }
-        } else
-            return "";
-        break;
-    case 3:
-        var n = cspRules.search("img-src");
-        if (n != -1) {
-            n += 7;
-            var k = cspRules.indexOf(";", n);
-            if (k != -1) {
-                return cspRules.substring(n, k);
-            } else {
-                return cspRules.substring(n);
-            }
-        } else
-            return "";
-        break;
-    case 4:
-        var n = cspRules.search("media-src");
-        if (n != -1) {
-            n += 9;
-            var k = cspRules.indexOf(";", n);
-            if (k != -1) {
-                return cspRules.substring(n, k);
-            } else {
-                return cspRules.substring(n);
-            }
-        } else
-            return "";
-        break;
-    case 5:
-        var n = cspRules.search("style-src");
-        if (n != -1) {
-            n += 9;
-            var k = cspRules.indexOf(";", n);
-            if (k != -1) {
-                return cspRules.substring(n, k);
-            } else {
-                return cspRules.substring(n);
-            }
-        } else
-            return "";
-        break;
-    case 6:
-        var n = cspRules.search("frame-src");
-        if (n != -1) {
-            n += 9;
-            var k = cspRules.indexOf(";", n);
-            if (k != -1) {
-                return cspRules.substring(n, k);
-            } else {
-                return cspRules.substring(n);
-            }
-        } else
-            return "";
-        break;
-    case 7:
-        var n = cspRules.search("font-src");
-        if (n != -1) {
-            n += 8;
-            var k = cspRules.indexOf(";", n);
-            if (k != -1) {
-                return cspRules.substring(n, k);
-            } else {
-                return cspRules.substring(n);
-            }
-        } else
-            return "";
-        break;
-    case 8:
-        var n = cspRules.search("xhr-src");
-        if (n != -1) {
-            n += 7;
-            var k = cspRules.indexOf(";", n);
-            if (k != -1) {
-                return cspRules.substring(n, k);
-            } else {
-                return cspRules.substring(n);
-            }
-        } else
-            return "";
-        break;
-    case 9:
-        var n = cspRules.search("frame-ancestors");
-        if (n != -1) {
-            n += 15;
-            var k = cspRules.indexOf(";", n);
-            if (k != -1) {
-                return cspRules.substring(n, k);
-            } else {
-                return cspRules.substring(n);
-            }
-        } else
-            return "";
-        break;
-        
-    } // end of switch statement
-}// end of combinedCSPFilter function
+// // helper function to "applyCombinedRules"
+// // It stores csp policy string into usercspArray format to send to d/b
+// function combinedCSPFilter(cspRules, index) {
+// switch(index)
+//     {
+//     case 0:
+//         var n = cspRules.search("default-src");
+//         if (n != -1) {
+//             n += 11;
+//             var k = cspRules.indexOf(";", n);
+//             if (k != -1) {
+//                 return cspRules.substring(n, k);
+//             } else {
+//                 return cspRules.substring(n);
+//             }
+//         } else 
+//             return "";
+//         break;
+//     case 1:
+//         var n = cspRules.search("script-src");
+//         if (n != -1) {
+//             n += 10;
+//             var k = cspRules.indexOf(";", n);
+//             if (k != -1) {
+//                 return cspRules.substring(n, k);
+//             } else {
+//                 return cspRules.substring(n);
+//             }
+//         } else
+//             return "";
+//         break;
+//     case 2:
+//         var n = cspRules.search("object-src");
+//         if (n != -1) {
+//             n += 10;
+//             var k = cspRules.indexOf(";", n);
+//             if (k != -1) {
+//                 return cspRules.substring(n, k);
+//             } else {
+//                 return cspRules.substring(n);
+//             }
+//         } else
+//             return "";
+//         break;
+//     case 3:
+//         var n = cspRules.search("img-src");
+//         if (n != -1) {
+//             n += 7;
+//             var k = cspRules.indexOf(";", n);
+//             if (k != -1) {
+//                 return cspRules.substring(n, k);
+//             } else {
+//                 return cspRules.substring(n);
+//             }
+//         } else
+//             return "";
+//         break;
+//     case 4:
+//         var n = cspRules.search("media-src");
+//         if (n != -1) {
+//             n += 9;
+//             var k = cspRules.indexOf(";", n);
+//             if (k != -1) {
+//                 return cspRules.substring(n, k);
+//             } else {
+//                 return cspRules.substring(n);
+//             }
+//         } else
+//             return "";
+//         break;
+//     case 5:
+//         var n = cspRules.search("style-src");
+//         if (n != -1) {
+//             n += 9;
+//             var k = cspRules.indexOf(";", n);
+//             if (k != -1) {
+//                 return cspRules.substring(n, k);
+//             } else {
+//                 return cspRules.substring(n);
+//             }
+//         } else
+//             return "";
+//         break;
+//     case 6:
+//         var n = cspRules.search("frame-src");
+//         if (n != -1) {
+//             n += 9;
+//             var k = cspRules.indexOf(";", n);
+//             if (k != -1) {
+//                 return cspRules.substring(n, k);
+//             } else {
+//                 return cspRules.substring(n);
+//             }
+//         } else
+//             return "";
+//         break;
+//     case 7:
+//         var n = cspRules.search("font-src");
+//         if (n != -1) {
+//             n += 8;
+//             var k = cspRules.indexOf(";", n);
+//             if (k != -1) {
+//                 return cspRules.substring(n, k);
+//             } else {
+//                 return cspRules.substring(n);
+//             }
+//         } else
+//             return "";
+//         break;
+//     case 8:
+//         var n = cspRules.search("xhr-src");
+//         if (n != -1) {
+//             n += 7;
+//             var k = cspRules.indexOf(";", n);
+//             if (k != -1) {
+//                 return cspRules.substring(n, k);
+//             } else {
+//                 return cspRules.substring(n);
+//             }
+//         } else
+//             return "";
+//         break;
+//     case 9:
+//         var n = cspRules.search("frame-ancestors");
+//         if (n != -1) {
+//             n += 15;
+//             var k = cspRules.indexOf(";", n);
+//             if (k != -1) {
+//                 return cspRules.substring(n, k);
+//             } else {
+//                 return cspRules.substring(n);
+//             }
+//         } else
+//             return "";
+//         break;
+//      case 10:
+//         var n = cspRules.search("report-uri");
+//         if (n != -1) {
+//             n += 10;
+//             var k = cspRules.indexOf(";", n);
+//             if (k != -1) {
+//                 return cspRules.substring(n, k);
+//             } else {
+//                 return cspRules.substring(n);
+//             }
+//         } else
+//             return "";
+//         break;   
+//     } // end of switch statement
+// }// end of combinedCSPFilter function
