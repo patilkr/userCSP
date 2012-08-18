@@ -550,6 +550,12 @@ function changeDirectiveClass(id, flag) {
         else
             document.getElementById("Report-uri").className = "current";
         break;
+    case 11:
+        if (!flag) 
+            document.getElementById("Infer-Policy").className = "";
+        else
+            document.getElementById("Infer-Policy").className = "current";
+        break;
     default:
         if (!flag) 
             document.getElementById("All-policies").className = "";
@@ -613,16 +619,39 @@ function changeDirective(event, curDirID) {
 
     var dynamicDirDIV = document.getElementById("dynamicDirDiv");
     var dynamicAllTabDIV = document.getElementById("dynamicAllTabDiv");
+    var dynamicInferDIV = document.getElementById("dynamicInferDiv");
+    
+    // If infer policy UI is selected
+    if (curDirID == 11){
+        // Hide All Tab UI, CSP Directive UI and show Infer policy UI
+        dynamicDirDIV.style.display ='none';
+        dynamicAllTabDIV.style.display ='none';
+        dynamicInferDIV.style.display ='block';
+
+        // Remove "current" class from oldDirective
+        changeDirectiveClass(previousTabId, false);
+
+        // Set "current" class to currently selected tab 
+        changeDirectiveClass(curDirID, true);
+
+        // Store curDirID for next reference
+       // oldDirectiveValue =  curDirID;
+        previousTabId = curDirID;
+        return;
+    } // end of Infer policy UI
+
 
     if (curDirID != -1 && previousTabId == -1) {
         // Hide All Tab UI and Show CSP Directive UI
+        dynamicInferDIV.style.display ='none';
         dynamicDirDIV.style.display ='block';
         dynamicAllTabDIV.style.display ='none';
-       
+
         helperToChangeTab(event, curDirID);
         
     } else if (curDirID == -1 && previousTabId != -1) {
         // Show All Tab UI and Hide CSP Directive UI
+        dynamicInferDIV.style.display ='none';
         dynamicDirDIV.style.display ='none';
         dynamicAllTabDIV.style.display ='block';
 
@@ -696,7 +725,14 @@ function changeDirective(event, curDirID) {
         }
 
         // End of dynamicAllTabDiv
-    } else {
+    } else if (previousTabId == 11) {
+        // Hide All Tab UI and Show CSP Directive UI
+        dynamicInferDIV.style.display ='none';
+        dynamicDirDIV.style.display ='block';
+        dynamicAllTabDIV.style.display ='none';
+        helperToChangeTab(event, curDirID);
+        previousTabId = curDirID;
+    }else {
         // use change directive tab
         helperToChangeTab(event, curDirID);
         previousTabId = curDirID;
@@ -880,7 +916,12 @@ function restoreCSPRules() {
         document.getElementById("inlineEvalRuleBtnFalse").checked = true;                      
     }
 
-
+    // // Infer CSP rules
+    if (inferCSPAll[selectedDomain]) {
+        document.getElementById("inferredCSP").innerHTML = inferCSPAll[selectedDomain];
+    } else {
+        document.getElementById("inferredCSP").innerHTML = "";
+    }
 
 } // end of "restoreCSPRules" function
 
@@ -1364,3 +1405,14 @@ function applyCombinedRules() {
 //         break;   
 //     } // end of switch statement
 // }// end of combinedCSPFilter function
+
+// Function to display inferred CSP policy
+function showInferRules() {
+    var selectedDomain = getSelectedDomain();
+    if (inferCSPAll[selectedDomain]) {
+        document.getElementById("inferredCSP").innerHTML = inferCSPAll[selectedDomain];
+    } else {
+        document.getElementById("inferredCSP").innerHTML = "";
+    }
+
+} // end of showInferRules function

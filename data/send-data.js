@@ -39,3 +39,11 @@ function getforAll() {
 function getCombineStrict(sitePolicy, userPolicy, webDomain) {
     addon.port.emit("combineStrictPolicy", sitePolicy, userPolicy, webDomain);
 }
+
+// Infer Policy start/stop
+function inferCSPRules(state) {
+    // if (!state)
+    //     showInferRules();
+ 
+   addon.port.emit("inferCSPPolicy", state);
+}

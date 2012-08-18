@@ -121,7 +121,7 @@ addon.port.on("addHostName", function (hName) {
 }); // end of "addHostName" event listener
 
 // Add CSP rules into global table
-addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPList, userCSPList) {
+addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPList, userCSPList, inferRulesList) {
     dump("\n UI: I have received CSP Rules for: "+dListData.length+" Domains");
 
     // cannot use ".length" method  on websiteListData variable. 
@@ -158,6 +158,7 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
 
             // store website defined CSP in global table 
             websiteCSPAll[dNames.options[i].value] = websiteCSPList[dNames.options[i].value];
+
            // dump("\n Website defined CSP = " + websiteCSPAll[dNames.options[i].value]);
 
             for (var k=0; k<11; k++) {
@@ -186,25 +187,18 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
 		            }
 	          } // end of FOR loop "j"
 
-            
-            // userCSPArray[dNames.options[i].value][11] = dListData[dNames.options[i].value][11];
-            // userCSPArray[dNames.options[i].value][12] = dListData[dNames.options[i].value][12];
-            // userCSPArray[dNames.options[i].value][13] = userCSPList[dNames.options[i].value][3];
-            
-
-	          // if(dListData[dNames.options[i].value][11].indexOf("true") != -1) {
-		        //     userCSPArray[dNames.options[i].value][11] = true;
-	          // } else {
-		        //     userCSPArray[dNames.options[i].value][11] = false;
-	          // }
-
-	           // dump("\n Restored: "+userCSPArray[dNames.options[i].value][11]);
-
 	      } // endof IF dListData Loop
 
+
+        // Infer CSP rules
+        if (typeof(inferRulesList) != undefined) {
+            if (inferRulesList[dNames.options[i].value])
+                inferCSPAll[dNames.options[i].value] = inferRulesList[dNames.options[i].value];
+        }
+        
     } // end of FOR loop "i"
     
-
+    
     // Restore CSP rules for selected Domain
     restoreCSPRules();
 
