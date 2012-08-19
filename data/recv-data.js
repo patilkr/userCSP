@@ -1,3 +1,7 @@
+/* * Contributor(s):
+ *   PATIL Kailas <patilkr24@gmail.com>
+*/
+
 // // Helper function to set the Name of selected domain
 function setSelectedDomain(activeDomain) {
     var dName = document.getElementById("domainName");  
@@ -239,4 +243,23 @@ addon.port.on("setCombineStrict", function (strictCSP, webDomain) {
         userCSPArray[selectedDomain][13] = strictCSP;
     }
     
+});
+
+
+// set Infered CSP array of a website to userCSP Array
+addon.port.on("setInferAsUserCSP", function (webDomain, inferredCSPArray) {
+    var selectedDomain = getSelectedDomain();
+
+    if (typeof(inferredCSPArray[webDomain])==undefined) 
+        return;
+
+    if (selectedDomain.match(webDomain)) {
+        for (var i=0; i<10; i++) {
+            if (inferredCSPArray[selectedDomain][i] != null || inferredCSPArray[selectedDomain][i] != "null") {
+                userCSPArray[selectedDomain][i] = inferredCSPArray[selectedDomain][i];
+            } else {
+                userCSPArray[selectedDomain][i] ="";
+            }
+        }
+    }
 });

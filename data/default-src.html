@@ -109,6 +109,7 @@ var inferCSPAll = {}; // stores infer policy for website
     
     <ol id="toc">
     <li id="All-policies"><a  href="#" onclick="changeDirective(this, -1);">All</a></li>
+    <li id="Infer-Policy"><a  href="#" onclick="changeDirective(this, 11);">Infer-CSP</a></li>    
     <li id="Default-Src" class="current"><a  href="#" onclick="changeDirective(this, 0);">default-src</a></li>
     <li id="Script-Src"><a  href="#" onclick="changeDirective(this, 1);">script-src</a></li>
     <li id="Object-Src"><a  href="#" onclick="changeDirective(this, 2);">object-src</a></li>
@@ -120,7 +121,7 @@ var inferCSPAll = {}; // stores infer policy for website
     <li id="Xhr-Src"><a  href="#" onclick="changeDirective(this, 8);">xhr-src</a></li>
     <li id="Frame-Ancestors"><a  href="#" onclick="changeDirective(this, 9);">frame-ancestors</a></li>
     <li id="Report-uri"><a  href="#" onclick="changeDirective(this, 10);">Report-uri</a></li>
-<li id="Infer-Policy"><a  href="#" onclick="changeDirective(this, 11);">Infer-CSP</a></li>
+    <li id="Help"><a  href="#" onclick="changeDirective(this, 12);">Help</a></li>
 </ol>
 
      <!-- <select id="cspDirectives" style="width:220px" onchange="storeDirectiveData(this);"> -->
@@ -211,17 +212,37 @@ var inferCSPAll = {}; // stores infer policy for website
     
     <!-- Infer Policy Tab -->
     <div id="dynamicInferDiv">
+      
+      <br />
+       <label id='startInferBtnHelp' style="color:gray;"></label> <br />
+
+      <input type='button' id='startInferCSPbtn' value='Start CSP Infer' onclick='inferCSPRules(1);' />&nbsp;&nbsp;&nbsp;
+      <input type='button' id='stopInferCSPbtn' value='Stop CSP Infer' onclick='inferCSPRules(0);' /> <br /> <br />
+
       <label ><b>Inferred CSP Rules:</b> </label>    <br />
       <label id='inferredCSP' style="color:blue;"></label> <br />
       <br />
-      <input type='button' id='startInferCSPbtn' value='Start CSP Infer' onclick='inferCSPRules(1);' />&nbsp;&nbsp;&nbsp;
-      <input type='button' id='stopInferCSPbtn' value='Stop CSP Infer' onclick='inferCSPRules(0);' />
-    </div>
 
+      <input type='button' id='setInferCSPAsUserCSP' value='Set As User CSP' onclick='setInferCSPAsUserCSP();' />
+    </div>
+    <!-- End of Infer Policy Tab -->
+    
+    <!-- Help Tab -->
+    <div id="dynamicHelpDiv">
+      <br /><br/>
+      <label id='userCSPHelp' style="color:blue;">If the website rules appear to be missing for a site that has implemented CSP, try clicking shift-refresh.  It may be because the website is cached.</label> <br />
+    </div>
+    <!-- End of Help Tab -->
 
     <script>
       var AllTabDIV = document.getElementById("dynamicAllTabDiv");
+      var dynamicInferDIV = document.getElementById("dynamicInferDiv");
+      var dynamicHelpDIV = document.getElementById("dynamicHelpDiv");
+
       AllTabDIV.style.display ='none'; 
+      dynamicInferDIV.style.display ='none';
+      dynamicHelpDIV.style.display ='none';
+
       // Set Error msg color to Red
       document.getElementById("errorMsg").style.color= "red";
 
@@ -229,6 +250,9 @@ var inferCSPAll = {}; // stores infer policy for website
       document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
       document.getElementById("inlineScriptRuleBtnFalse").checked = true;
       document.getElementById("inlineEvalRuleBtnFalse").checked = true;
+
+      // Infer CSP policy button
+      document.getElementById("stopInferCSPbtn").disabled = true;
     </script>
 
 </div> <!-- end of DIV class content -->

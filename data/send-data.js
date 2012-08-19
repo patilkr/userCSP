@@ -1,3 +1,7 @@
+/* * Contributor(s):
+ *   PATIL Kailas <patilkr24@gmail.com>
+*/
+
 // Global Variable
 //var selectDomainList = document.getElementById("domainName");
 
@@ -42,8 +46,22 @@ function getCombineStrict(sitePolicy, userPolicy, webDomain) {
 
 // Infer Policy start/stop
 function inferCSPRules(state) {
-    // if (!state)
-    //     showInferRules();
  
+    if (state) {
+        document.getElementById("startInferCSPbtn").disabled = true;
+        document.getElementById("stopInferCSPbtn").disabled = false;
+        document.getElementById("startInferBtnHelp").innerHTML="(Load websites to Infer CSP policy for them)";
+    } else {
+        document.getElementById("startInferCSPbtn").disabled = false;
+        document.getElementById("stopInferCSPbtn").disabled = true;
+        document.getElementById("startInferBtnHelp").innerHTML="";
+    }
+
    addon.port.emit("inferCSPPolicy", state);
+} // end of inferCSPRules function
+
+
+// Function to get inferred CSP Rule array from main 
+function getInferCSPArray(webDomain) {
+    addon.port.emit("inferCSPArray", webDomain);
 }
