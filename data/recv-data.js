@@ -174,12 +174,11 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
         // Record userCSP in Database
         if (userCSPList[dNames.options[i].value]) {
             userCSPAll[dNames.options[i].value] = userCSPList[dNames.options[i].value][0];
-            dump("\n User Specified CSP I sent is = " + userCSPList[dNames.options[i].value][0]);
-            dump("\n User Specified CSP I received is = " + userCSPAll[dNames.options[i].value]);
+            // dump("\n User Specified CSP I sent is = " + userCSPList[dNames.options[i].value][0]);
+            // dump("\n User Specified CSP I received is = " + userCSPAll[dNames.options[i].value]);
         }
-        // --TODO -- (update userCSP if user modified rules for domain)
-
-	      dump("\n Restoring CSP rules of Domain:"+dNames.options[i].value);
+       
+        //  dump("\n Restoring CSP rules of Domain:"+dNames.options[i].value);
 	      if (dListData[dNames.options[i].value]) {
 	          for (var j=0; j<15; j++) {
                 // Restore userCSP array from Database
@@ -187,7 +186,7 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
 		                userCSPArray[dNames.options[i].value][j] = "";
 		            } else {
 		                userCSPArray[dNames.options[i].value][j] = dListData[dNames.options[i].value][j];
-		                dump("\n Restored: "+j+" directive="+userCSPArray[dNames.options[i].value][j]);
+                    //  dump("\n Restored: "+j+" directive="+userCSPArray[dNames.options[i].value][j]);
 		            }
 	          } // end of FOR loop "j"
 
@@ -232,7 +231,7 @@ addon.port.on("rmHost", function (hName) {
 
 // set combineStrict Policy
 addon.port.on("setCombineStrict", function (strictCSP, webDomain) {  
-    dump("$$$ CSP after RefinePolicy="+strictCSP);
+        //  dump("$$$ CSP after RefinePolicy="+strictCSP);
     var selectedDomain = getSelectedDomain();
    
     if (selectedDomain.match(webDomain) && (previousTabId == -1)) {
