@@ -394,13 +394,17 @@ function getDomainChoice(evt) {
         break;
     } // end of switch
 
-    // if (!userCSPArray[selectedDomain][11]) {
-    //     dump("\nchange rule state to disable");
-    //     document.getElementById("cspRuleDisable").checked = true;
-    // } else {
-    //     dump("\nchange rule state to enbale");
-    //     document.getElementById("cspRuleEnable").checked = true;
-    // }
+   
+    // Restore infered Policy for selected domain
+    selectedDomain = getSelectedDomain();
+    // remove text from label named "inferredCSP" 
+    setLabelToEmptyString("inferredCSP");
+        
+    if (inferCSPAll[selectedDomain]) {
+        document.getElementById("inferredCSP").innerHTML = inferCSPAll[selectedDomain];
+    } else {
+        document.getElementById("inferredCSP").innerHTML = "";
+    }
 
 
 } // end of getDomainChoice() Function
@@ -618,6 +622,7 @@ function helperToChangeTab(event, curDirID) {
         }
     }
 
+
 } // end of "helperToChangeTab" function
 
 
@@ -646,6 +651,17 @@ function changeDirective(event, curDirID) {
         // Set "current" class to currently selected tab 
         changeDirectiveClass(curDirID, true);
 
+         var selectedDomain = getSelectedDomain();
+        // remove text from label named "inferredCSP" 
+        setLabelToEmptyString("inferredCSP");
+        
+        if (inferCSPAll[selectedDomain]) {
+            document.getElementById("inferredCSP").innerHTML = inferCSPAll[selectedDomain];
+        } else {
+            document.getElementById("inferredCSP").innerHTML = "";
+        }
+
+
         // Store curDirID for next reference
        // oldDirectiveValue =  curDirID;
         previousTabId = curDirID;
@@ -664,7 +680,7 @@ function changeDirective(event, curDirID) {
         changeDirectiveClass(previousTabId, false);
 
         // Set "current" class to currently selected tab 
-        changeDirectiveClass(curDirID, true);
+        changeDirectiveClass(curDirID, true);       
 
         // Store curDirID for next reference
        // oldDirectiveValue =  curDirID;

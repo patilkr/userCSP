@@ -171,11 +171,11 @@ var inferCSPAll = {}; // stores infer policy for website
       <br />
       <input type='radio' Name='group1' id='selectWebsiteCSPRuleBtn' value='W' onclick='rulesToApply(1);' />
       <label for='selectWebsiteCSPRuleBtn'><b>Website CSP Rules:</b> </label> <br />
-      <label id='websiteCompleteCSP' style="color:blue;"></label>  <br /><br />   
+      <label id='websiteCompleteCSP' style="color:#DD4B39;"></label>  <br /><br />   
       
       <input type='radio' Name='group1' id='selectUserCSPRuleBtn' value='U' onclick='rulesToApply(2);' />
       <label for='selectUserCSPRuleBtn'><b>User CSP Rules:</b> </label>    <br />
-      <label id='userCompleteCSP' style="color:blue;"></label> <br /><br />  
+      <label id='userCompleteCSP' style="color:#DD4B39;"></label> <br /><br />  
 
       <!-- <input type="text" id='userCompleteCSP' value="" style="border:none;background-color: #DBEAF5;" size="500" /> -->
       
@@ -192,18 +192,18 @@ var inferCSPAll = {}; // stores infer policy for website
 
       <br /> <br />
       <label for='selectCombinedCSPRuleBtn'><b>Combined Rules:</b> </label>   <br />
-      <label id='combinedWUCSP' style="color:blue;"></label> <!-- Unused -->
+      <label id='combinedWUCSP' style="color:#DD4B39;"></label> <!-- Unused -->
 
       
       <!-- &nbsp;&nbsp;&nbsp;<input type='radio' Name='group2' id='combineStrictRule1btn' value='S' onclick='combineStrict();' />  -->
       <input type='radio' Name='group1' id='selectCombinedSCSPRuleBtn' value='C' onclick='rulesToApply(3);' />
       <label for='selectCombinedSCSPRuleBtn'> Combine Strict </label> <br />
-      <label id='combinedStrictCSP' style="color:blue;"> </label> <br /><br />
+      <label id='combinedStrictCSP' style="color:#DD4B39;"> </label> <br /><br />
       
       <!-- &nbsp;&nbsp;&nbsp;<input type='radio' Name='group2' id='combineLooseRule1btn' value='L' onclick='combineLoose();' /> -->
       <input type='radio' Name='group1' id='selectCombinedLCSPRuleBtn' value='C' onclick='rulesToApply(4);' />
       <label for='selectCombinedLCSPRuleBtn'> Combine Loose </label> <br />
-      <label id='combinedLooseCSP' style="color:blue;"> </label> <br /> <br />
+      <label id='combinedLooseCSP' style="color:#DD4B39;"> </label> <br /> <br />
     
       <p align='right'>  
         <input type='button' id='applyCombinedRule1btn' value='Save' onclick='applyCombinedRules();' /> </p>
@@ -220,7 +220,7 @@ var inferCSPAll = {}; // stores infer policy for website
       <input type='button' id='stopInferCSPbtn' value='Stop CSP Infer' onclick='inferCSPRules(0);' /> <br /> <br />
 
       <label ><b>Inferred CSP Rules:</b> </label>    <br />
-      <label id='inferredCSP' style="color:blue;"></label> <br />
+      <label id='inferredCSP' style="color:#DD4B39;"></label> <br />
       <br />
 
       <input type='button' id='setInferCSPAsUserCSP' value='Set As User CSP' onclick='setInferCSPAsUserCSP();' />
@@ -230,7 +230,7 @@ var inferCSPAll = {}; // stores infer policy for website
     <!-- Help Tab -->
     <div id="dynamicHelpDiv">
       <br /><br/>
-      <label id='userCSPHelp' style="color:blue;">If the website rules appear to be missing for a site that has implemented CSP, try clicking shift-refresh.  It may be because the website is cached.</label> <br />
+      <label id='userCSPHelp' style="color:#DD4B39;">If the website rules appear to be missing for a site that has implemented CSP, try clicking shift-refresh.  It may be because the website is cached.</label> <br />
     </div>
     <!-- End of Help Tab -->
 
