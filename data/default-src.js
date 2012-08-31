@@ -130,7 +130,7 @@ function listenData(evt) {
     // text = removeSpaces(text);
 
     // Clear Previous Error msg if any
-    document.getElementById("errorMsg").innerHTML = "";
+    document.getElementById("errorMsg").textContent = "";
 
     if (text) {
         //--------------------------------------------------
@@ -189,7 +189,7 @@ function listenData(evt) {
                 if (wildcardIndex != -1) { //hostname wildcard check
                     if (wildcardIndex != 0) {
                         if (tokens[i][wildcardIndex-1] != ':') {
-                            document.getElementById("errorMsg").innerHTML = " Invalid Input:" + tokens[i];
+                            document.getElementById("errorMsg").textContent = " Invalid Input:" + tokens[i];
                            // window.alert("Unexpected value:"+tokens[i]);
                             continue;
                         }
@@ -204,10 +204,10 @@ function listenData(evt) {
                 if (tokens[i].indexOf('.') != -1) {
                     insertItemInList(tokens[i]);
                 } else {
-                    document.getElementById("errorMsg").innerHTML = " Invalid Input:" + tokens[i];
+                    document.getElementById("errorMsg").textContent = " Invalid Input:" + tokens[i];
                 }
             } // end of .match IF loop                   
-         else document.getElementById("errorMsg").innerHTML = " Invalid Input:" + tokens[i];
+         else document.getElementById("errorMsg").textContent = " Invalid Input:" + tokens[i];
         } // end of FOR loop
         //-----------------------------------------------------
        
@@ -280,7 +280,7 @@ function addData(evt) {
 } // end of "addData" function
 
 function setLabelToEmptyString(labelId) {
-    document.getElementById(labelId).innerHTML = "";
+    document.getElementById(labelId).textContent = "";
 }
 
 // Get user choice for domain name from drop down box
@@ -301,7 +301,7 @@ function getDomainChoice(evt) {
         if (websiteCSPAll  ||  websiteCSPAll != null) {
             if (websiteCSPAll[selectedDomain]) {
                 //  dump("\n @@@websiteCSPAll is present for this website="+websiteCSPAll[selectedDomain]);
-                document.getElementById("websiteCompleteCSP").innerHTML = websiteCSPAll[selectedDomain];
+                document.getElementById("websiteCompleteCSP").textContent = websiteCSPAll[selectedDomain];
             } else{ setLabelToEmptyString("websiteCompleteCSP"); }
         }else{ setLabelToEmptyString("websiteCompleteCSP"); }
 
@@ -309,7 +309,7 @@ function getDomainChoice(evt) {
         if (userCSPAll  ||  userCSPAll != null) {
             if (userCSPAll[selectedDomain]) {
                 // dump("\n @@@userCSPAll is present for this website="+userCSPAll[selectedDomain]);
-                document.getElementById("userCompleteCSP").innerHTML = userCSPAll[selectedDomain];
+                document.getElementById("userCompleteCSP").textContent = userCSPAll[selectedDomain];
             }else{ setLabelToEmptyString("userCompleteCSP"); }
         }else{ setLabelToEmptyString("userCompleteCSP"); }
 
@@ -401,9 +401,9 @@ function getDomainChoice(evt) {
     setLabelToEmptyString("inferredCSP");
         
     if (inferCSPAll[selectedDomain]) {
-        document.getElementById("inferredCSP").innerHTML = inferCSPAll[selectedDomain];
+        document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
     } else {
-        document.getElementById("inferredCSP").innerHTML = "";
+        document.getElementById("inferredCSP").textContent = "";
     }
 
 
@@ -656,9 +656,9 @@ function changeDirective(event, curDirID) {
         setLabelToEmptyString("inferredCSP");
         
         if (inferCSPAll[selectedDomain]) {
-            document.getElementById("inferredCSP").innerHTML = inferCSPAll[selectedDomain];
+            document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
         } else {
-            document.getElementById("inferredCSP").innerHTML = "";
+            document.getElementById("inferredCSP").textContent = "";
         }
 
 
@@ -724,7 +724,7 @@ function changeDirective(event, curDirID) {
         if (websiteCSPAll  ||  websiteCSPAll != null) {
             if (websiteCSPAll[selectedDomain]) {
                 // dump("\n @@@websiteCSPAll is present for this website="+websiteCSPAll[selectedDomain]);
-                document.getElementById("websiteCompleteCSP").innerHTML = websiteCSPAll[selectedDomain];
+                document.getElementById("websiteCompleteCSP").textContent = websiteCSPAll[selectedDomain];
             } else { setLabelToEmptyString("websiteCompleteCSP"); }
         } else { setLabelToEmptyString("websiteCompleteCSP"); }
 
@@ -737,7 +737,7 @@ function changeDirective(event, curDirID) {
         if (userCSPAll  ||  userCSPAll != null) {
             if (userCSPAll[selectedDomain]) {
                 //  dump("\n @@@userCSPAll is present for this website="+userCSPAll[selectedDomain]);
-                document.getElementById("userCompleteCSP").innerHTML = userCSPAll[selectedDomain];
+                document.getElementById("userCompleteCSP").textContent = userCSPAll[selectedDomain];
             } else { setLabelToEmptyString("userCompleteCSP"); }
         } else { setLabelToEmptyString("userCompleteCSP"); }
 
@@ -752,11 +752,11 @@ function changeDirective(event, curDirID) {
             break;
         case 3: // Combine Strict Rules
             document.getElementById("selectCombinedSCSPRuleBtn").checked = true;
-            document.getElementById("combinedStrictCSP").innerHTML = userCSPArray[selectedDomain][13];
+            document.getElementById("combinedStrictCSP").textContent = userCSPArray[selectedDomain][13];
             break;
         case 4: // Combine Loose Rules
             document.getElementById("selectCombinedLCSPRuleBtn").checked = true;
-            document.getElementById("combinedLooseCSP").innerHTML = userCSPArray[selectedDomain][13];
+            document.getElementById("combinedLooseCSP").textContent = userCSPArray[selectedDomain][13];
             break;
         default:
             document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
@@ -952,19 +952,19 @@ function restoreCSPRules() {
 
     // Restore "ALL" Tab contents
     if (typeof(websiteCSPAll[selectedDomain]) != undefined)
-        document.getElementById("websiteCompleteCSP").innerHTML = websiteCSPAll[selectedDomain];
+        document.getElementById("websiteCompleteCSP").textContent = websiteCSPAll[selectedDomain];
     else
-        document.getElementById("websiteCompleteCSP").innerHTML = "";
+        document.getElementById("websiteCompleteCSP").textContent = "";
   
     if(typeof(userCSPAll[selectedDomain]) != undefined)
-        document.getElementById("userCompleteCSP").innerHTML =  userCSPAll[selectedDomain];
+        document.getElementById("userCompleteCSP").textContent =  userCSPAll[selectedDomain];
     else
-        document.getElementById("userCompleteCSP").innerHTML = "";
+        document.getElementById("userCompleteCSP").textContent = "";
 
     if (typeof(userCSPArray[selectedDomain][13]) != undefined)
-        document.getElementById("combinedStrictCSP").innerHTML = userCSPArray[selectedDomain][13];
+        document.getElementById("combinedStrictCSP").textContent = userCSPArray[selectedDomain][13];
     else
-        document.getElementById("combinedStrictCSP").innerHTML = "";
+        document.getElementById("combinedStrictCSP").textContent = "";
     
     // Restore Inline Script check
     if (userCSPArray[selectedDomain][12] == true || userCSPArray[selectedDomain][12] == "true") {
@@ -979,9 +979,9 @@ function restoreCSPRules() {
 
     // // Infer CSP rules
     if (inferCSPAll[selectedDomain]) {
-        document.getElementById("inferredCSP").innerHTML = inferCSPAll[selectedDomain];
+        document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
     } else {
-        document.getElementById("inferredCSP").innerHTML = "";
+        document.getElementById("inferredCSP").textContent = "";
     }
 
 } // end of "restoreCSPRules" function
@@ -1264,7 +1264,7 @@ function combineLoose() {
     //  dump("\n %%Combine Loose CSP Policy = " +Result);
     
     // Display combine Policy in UI
-    document.getElementById("combinedLooseCSP").innerHTML = Result;
+    document.getElementById("combinedLooseCSP").textContent = Result;
     
     // Store combined policy in userCSPArray
     userCSPArray[selectedDomain][13] = Result;
@@ -1299,7 +1299,7 @@ function applyCombinedRules() {
         // ----------------------------------------------------------
         
 
-        // var cspRules = document.getElementById("combinedWUCSP").innerHTML;
+        // var cspRules = document.getElementById("combinedWUCSP").textContent;
 
         // if (cspRules == null || cspRules == "")
         //     return;
@@ -1483,9 +1483,9 @@ function setInferCSPAsUserCSP() {
 // function showInferRules() {
 //     var selectedDomain = getSelectedDomain();
 //     if (inferCSPAll[selectedDomain]) {
-//         document.getElementById("inferredCSP").innerHTML = inferCSPAll[selectedDomain];
+//         document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
 //     } else {
-//         document.getElementById("inferredCSP").innerHTML = "";
+//         document.getElementById("inferredCSP").textContent = "";
 //     }
 
 // } // end of showInferRules function

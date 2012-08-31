@@ -51,10 +51,10 @@ addon.port.on("addHostName", function (hName) {
 
      // ---//Clear UI Elements as well--------------------
     //1. Reset All tab contents
-    document.getElementById("websiteCompleteCSP").innerHTML = "";
-    document.getElementById("userCompleteCSP").innerHTML = "";
-    document.getElementById("combinedStrictCSP").innerHTML = "";
-    document.getElementById("combinedLooseCSP").innerHTML = "";
+    document.getElementById("websiteCompleteCSP").textContent = "";
+    document.getElementById("userCompleteCSP").textContent = "";
+    document.getElementById("combinedStrictCSP").textContent = "";
+    document.getElementById("combinedLooseCSP").textContent = "";
     document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
     document.getElementById("inlineScriptRuleBtnFalse").checked = true;
     document.getElementById("inlineEvalRuleBtnFalse").checked = true;
@@ -236,7 +236,7 @@ addon.port.on("setCombineStrict", function (strictCSP, webDomain) {
    
     if (selectedDomain.match(webDomain) && (previousTabId == -1)) {
         // Display it in UI
-        document.getElementById("combinedStrictCSP").innerHTML = strictCSP;
+        document.getElementById("combinedStrictCSP").textContent = strictCSP;
         
         // Store it in userCSP Array
         userCSPArray[selectedDomain][13] = strictCSP;
