@@ -1,0 +1,28 @@
+\begin{abstract}
+
+According to OWASP top vulnerability list, cross-site scripting (XSS)
+is among the top five web application vulnerabilities. It allows
+attackers to inject malicious code or resources from attacker domains
+into the document of the vulnerable web page. Browsers are not able to
+distinguish which content is legitimate and which content is
+malicious. Therefore, Content Security Policy is used to enable the
+browser to identify potentially malicious injected content in a web
+page.
+
+By-default CSP doesn't allow inline scripts and eval, which are used
+by almost all website. Therefore to use CSP policy, websites requires
+to change their code. The requirement of this change is hindering the
+adaptation of CSP by web applications (websites). However, there are
+savvy users who prefer security over usability. In addition, web sites
+developers need a tool to test different CSP rules for their website
+to secure their users and achieve usability. To address these issues
+we proposed an approach \codename and prototype our approach in
+Firefox extension using the JetPack framework.  \codename allows savvy
+users to specify CSP to particular websites or to specify general CSP
+rules that is enforced on each and every website a user
+visits. Moreover, it allows website developers to try different CSP
+rules to adapt the best suited CSP policy for their website.
+
+
+
+\end{abstract} 

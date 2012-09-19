@@ -1,0 +1,72 @@
+\section{Introduction}
+\label{sec:background}
+
+The web browsers security model is rooted in the same-origin policy
+(SOP)~\cite{sop}, which isolates resources of one origin from
+others. However, attackers still able to subvert the SOP by injecting
+malicious contents into the web site such as Cross-site scripting
+(XSS) attacks~\cite{xss}. Cross-site Scripting (XSS) attacks in web
+applications are considered a major threat. It allows an attacker to
+conduct a wide range of potential attacks such as, session hijacking,
+stealing of sensitive data and passwords, creation of self-propagating
+JavaScript worms, etc. To mitigate XSS attacks, Content security
+policy (CSP)~\cite{csp} provide website administrators with a way to
+enforce content restrictions at client side.
+
+Content Security Policy is a declarative policy that restricts what
+content can be loaded on a web page.  Its primary purpose is to
+mitigate Cross-Site Scripting vulnerabilities.  The core issue
+exploited by Cross-Site Scripting (XSS) attacks is the lack of
+knowledge in web browser’s to distinguish between content that’s
+intended to be part of web application, and content that’s been
+maliciously injected into web application.  To address this problem,
+CSP defines the {\tt Content-Security-Policy} HTTP header that allows
+web application developers to create a whitelist of sources of trusted
+content, and instruct the client browsers to only execute or render
+resources from those sources.  However, it is often difficult for
+developers to write a comprehensive Content Security Policy for their
+website.  They may worry about their page breaking because
+unanticipated but necessary content is blocked.  They may not be able
+to easily change the headers their site is sending when these
+situations occur, which makes it difficult for them to try different
+policies until they find one that is the most restrictive for their
+page without breaking site functionality.
+
+\codename changes this!  A developer or user can now view the current
+policy set by their site and add their own policy.  They can then
+choose whether to apply their policy or the sites policy.  Moreover,
+they choose to combine these policies and apply the combined policy.
+When combining policies, they have an option to choose from the
+strictest subset of the two, or the most open subset.  They can test
+their site out with their policy set and tweak it until they have one
+that works. 
+
+\codename also allows automatic inference of content security policy
+for a website. Automatically inferred CSP policy for a website helps
+web developers to figure out what CSP rules to set for their site by
+giving them the strictest possible policy they could apply without
+breaking the current page. To infer the CSP policy for a website,
+\codename analyzes the content on the current web page and recommends
+a content security policy (CSP) based on the types of content and
+sources of that content.  \codename provides this inferred policy to
+developers in the proper syntax for the CSP header, so all a developer
+needs to do is tack on the header name and add it to their
+site. Moreover, it allows users to enforce inferred policy on the
+website. Furthermore, \codename allows savvy users to be able to
+voluntarily specify their own Content Security Policy (CSP) for
+websites that may not have implemented CSP.
+
+In summary, this poster makes following contributions:
+
+\begin {itemize}
+
+\item We present an automated approach, \codename, for writing
+  content security policy (CSP) for a website.
+
+\item \codename allows savvy users to be able to voluntarily specify
+  their own Content Security Policy (CSP) for websites that may not
+  have implemented CSP.
+
+\item We implemented a prototype of our approach in a Firefox extension.
+
+\end{itemize}
