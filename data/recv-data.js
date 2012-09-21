@@ -158,12 +158,12 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
     for (var i=0; i<dNames.options.length; i++) {
         if (websiteListData[dNames.options[i].value]) {
             websiteCSPArray[dNames.options[i].value] = new Array(11);
-           // dump("\n@@ Website CSP Array is created for : "+dNames.options[i].value);
+            dump("\n@@ Website CSP Array is created for : "+dNames.options[i].value);
 
             // store website defined CSP in global table 
             websiteCSPAll[dNames.options[i].value] = websiteCSPList[dNames.options[i].value];
 
-           // dump("\n Website defined CSP = " + websiteCSPAll[dNames.options[i].value]);
+            dump("\n Website defined CSP = " + websiteCSPAll[dNames.options[i].value]);
 
             for (var k=0; k<11; k++) {
                 websiteCSPArray[dNames.options[i].value][k] = websiteListData[dNames.options[i].value][k];
@@ -174,8 +174,8 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
         // Record userCSP in Database
         if (userCSPList[dNames.options[i].value]) {
             userCSPAll[dNames.options[i].value] = userCSPList[dNames.options[i].value][0];
-            // dump("\n User Specified CSP I sent is = " + userCSPList[dNames.options[i].value][0]);
-            // dump("\n User Specified CSP I received is = " + userCSPAll[dNames.options[i].value]);
+             dump("\n User Specified CSP I sent is = " + userCSPList[dNames.options[i].value][0]);
+             dump("\n User Specified CSP I received is = " + userCSPAll[dNames.options[i].value]);
         }
        
         //  dump("\n Restoring CSP rules of Domain:"+dNames.options[i].value);
@@ -186,7 +186,7 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
 		                userCSPArray[dNames.options[i].value][j] = "";
 		            } else {
 		                userCSPArray[dNames.options[i].value][j] = dListData[dNames.options[i].value][j];
-                    //  dump("\n Restored: "+j+" directive="+userCSPArray[dNames.options[i].value][j]);
+                      dump("\n Restored: "+j+" directive="+userCSPArray[dNames.options[i].value][j]);
 		            }
 	          } // end of FOR loop "j"
 
@@ -194,9 +194,13 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
 
 
         // Infer CSP rules
-        if (typeof(inferRulesList) != undefined) {
-            if (inferRulesList[dNames.options[i].value])
-                inferCSPAll[dNames.options[i].value] = inferRulesList[dNames.options[i].value];
+        try {
+            if (typeof(inferRulesList) != undefined) {
+                if (typeof(inferRulesList[dNames.options[i].value]) != undefined)
+                    inferCSPAll[dNames.options[i].value] = inferRulesList[dNames.options[i].value];
+            }
+        } catch(e) {
+            dump(" ERROR!! inferRulesList in recv-data is not valid");
         }
         
     } // end of FOR loop "i"
