@@ -4,15 +4,15 @@
 We implemented UserCSP \footnote[1]{UserCSP Source Code:
   https://github.com/patilkr/userCSP} in Firefox extension using the
 Jetpack SDK v1.9~\cite{JetPack-SDK}. UserCSP intercepted various
-events, including the ¡±READY¡±, ¡±ACTIVATE¡±, and ¡±CLOSE¡± events on
+events, including the {\it READY}, {\it ACTIVATE}, and {\it CLOSE} events on
 tab. The READY event is used to retrieve a list of open websites in a
-user¡¯s Firefox web browser. The ACTIVATE event is used to select the
+user's Firefox web browser. The ACTIVATE event is used to select the
 currently active domain in the web browser.  The CLOSE event is used
 to remove the domain name from the UI if a user closes the
 tab. UserCSP uses a sqlite database to store user specified CSP rules
 for websites.
 
-The ¡±http-on-examine-response¡± observer notification is used to
+The {\it http-on-examine-response} observer notification is used to
 intercept the HTTP response. In the intercepted response, the domain
 that initiated the request is checked against the sqlite local
 database to determine whether user defined rules were set. If there
@@ -23,7 +23,7 @@ the rules specified by the user. If user has opted to enforce their
 own rules then UserCSP replaces the existing {\tt Content-
   Security-Policy} header if it is already set by the website.
 
-%% [Kailas - unless the user has selected to apply website rules
-%% instead of their own rules.  Maybe add something about that].
+\tanvi{ [Kailas - unless the user has selected to apply website rules
+ instead of their own rules.  Maybe add something about that]}.
 
 
