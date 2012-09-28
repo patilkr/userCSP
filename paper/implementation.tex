@@ -1,24 +1,29 @@
-\section {Implementation of \codename}
+\section {Implementation of UserCSP}
 \label{sec:imp}
 
-We implemented \codename \footnote[1]{UserCSP Source Code:
+We implemented UserCSP \footnote[1]{UserCSP Source Code:
   https://github.com/patilkr/userCSP} in Firefox extension using the
-Jetpack SDK v1.9~\cite{JetPack-SDK}. \Codename intercepted various events like the "READY",
-"ACTIVATE", and "CLOSE" events on tab. The ready event is used to
-retrieve a list of open websites in a user's Firefox web browser. The
-activate event is used to select the currently active domain in the
-web browser. The close event is used to remove the domain name from
-the UI if a user closes the tab. \Codename used sqlite database to
-store user specified CSP policies for websites.
+Jetpack SDK v1.9~\cite{JetPack-SDK}. UserCSP intercepted various
+events, including the ¡±READY¡±, ¡±ACTIVATE¡±, and ¡±CLOSE¡± events on
+tab. The READY event is used to retrieve a list of open websites in a
+user¡¯s Firefox web browser. The ACTIVATE event is used to select the
+currently active domain in the web browser.  The CLOSE event is used
+to remove the domain name from the UI if a user closes the
+tab. UserCSP uses a sqlite database to store user specified CSP rules
+for websites.
 
-The "http-on-examine-response" observer notification is used to
+The ¡±http-on-examine-response¡± observer notification is used to
 intercept the HTTP response. In the intercepted response, the domain
 that initiated the request is checked against the sqlite local
-database to determine whether user defined rules. If there are no
-rules associated with the website, the response is processed without
-any change. However, if user defined CSP rule exists, the
-"Content-Security-Policy" header is added to the response with the
-rules specified by user. It replaces the existing
-"Content-Security-Policy" header if it is already set by website.
+database to determine whether user defined rules were set. If there
+are no rules associated with the website, the response is processed
+without any change.  However, if user defined CSP rules exist, the
+{\tt Content- Security-Policy} header is added to the response with
+the rules specified by the user. If user has opted to enforce their
+own rules then UserCSP replaces the existing {\tt Content-
+  Security-Policy} header if it is already set by the website.
+
+%% [Kailas - unless the user has selected to apply website rules
+%% instead of their own rules.  Maybe add something about that].
 
 
