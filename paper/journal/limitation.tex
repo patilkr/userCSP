@@ -1,0 +1,15 @@
+\section{Limitations}
+\label{sec:limit}
+
+The current implementation of userCSP add-on does not completely
+follow the W3C CSP 1.0 standard, but complies with Firefox's current
+implementation. Therefore, we used 'X-Content-Security-Policy' header,
+whereas according to W3C CSP 1.0 standard uses the
+'Content-Security-Policy' header. Firefox is in process to support CSP
+1.0 standard.
+
+Another limitation of Firefox's current implementation and hence this
+add-on is the use of the 'Options' CSP directive to allow or disallow
+inline scripts and inline evals. Whereas in CSP 1.0, inline JavaScript
+and evals are set in 'script-src' directive and inline css is set in
+the 'style-src' directive.

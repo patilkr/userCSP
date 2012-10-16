@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.5.11)  11 OCT 2012 00:04
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.5.11)  16 OCT 2012 10:57
 entering extended mode
  %&-line parsing enabled.
 **paper
@@ -343,8 +343,6 @@ LaTeX Font Info:    External font `cmex10' loaded for size
  (./abstract.tex
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1.
-Missing character: There is no ¡ in font ptmr7t!
-Missing character: There is no ¯ in font ptmr7t!
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 31.
@@ -362,31 +360,32 @@ Missing character: There is no ™ in font ptmr7t!
 File: xss-example.pdf Graphic file (type pdf)
 
 <use xss-example.pdf> [2 <./xss-example.pdf>]
-LaTeX Font Info:    Try loading font information for OML+pcr on input line 97.
+LaTeX Font Info:    Try loading font information for OML+pcr on input line 100.
+
 
 (/usr/share/texmf-texlive/tex/latex/psnfss/omlpcr.fd
 File: omlpcr.fd 
 )
 LaTeX Font Info:    Font shape `OML/pcr/m/n' in size <9> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 97.
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 100.
 
-Overfull \hbox (6.79999pt too wide) in paragraph at lines 97--98
+Overfull \hbox (6.79999pt too wide) in paragraph at lines 100--101
  [] 
  []
 
-<overlayExa.pdf, id=25, 357.335pt x 180.675pt>
+<overlayExa.pdf, id=23, 357.335pt x 180.675pt>
 File: overlayExa.pdf Graphic file (type pdf)
  <use overlayExa.pdf>
-Overfull \hbox (39.82237pt too wide) in paragraph at lines 115--128
+Overfull \hbox (39.82237pt too wide) in paragraph at lines 118--131
  \OT1/ptm/b/n/10 An Ex-am-ple of Click-jack-ing.[] \OT1/ptm/m/n/10 Fig-ure 2[] 
 shows an ex-am-ple of a Click-jack-ing at-tack. The front page of \OT1/pcr/m/n/
 10 http://example.com
  []
 
-[3 <./overlayExa.pdf>]) (./design.tex
-<userCSP_Arch.pdf, id=44, 157.58875pt x 119.44624pt>
+) (./design.tex <userCSP_Arch.pdf, id=25, 157.58875pt x 119.44624pt>
 File: userCSP_Arch.pdf Graphic file (type pdf)
- <use userCSP_Arch.pdf>
+
+<use userCSP_Arch.pdf> [3]
 Missing character: There is no ¡ in font ptmr7t!
 Missing character: There is no ¯ in font ptmr7t!
 Missing character: There is no ¡ in font ptmr7t!
@@ -411,30 +410,40 @@ Missing character: There is no ¡ in font ptmr7t!
 Missing character: There is no ± in font ptmr7t!
 Missing character: There is no ¡ in font ptmr7t!
 Missing character: There is no ¯ in font ptmr7t!
-)
-(./implementation.tex [4 <./userCSP_Arch.pdf>]) (./evaluation.tex
-Missing character: There is no ¡ in font ptmr7t!
-Missing character: There is no ¯ in font ptmr7t!
-Missing character: There is no ¡ in font ptmr7t!
-Missing character: There is no ¯ in font ptmr7t!
-)
-(./related.tex
+ [4 <./overlayExa.pdf> <./userCSP_Arch.pdf>])
+(./implementation.tex <UserCSP-ui.jpg, id=56, 626.34pt x 760.8425pt>
+File: UserCSP-ui.jpg Graphic file (type jpg)
+
+<use UserCSP-ui.jpg> [5 <./UserCSP-ui.jpg>]
+Overfull \hbox (10.24501pt too wide) in paragraph at lines 49--65
+\OT1/pcr/m/n/10 Infer-CSP, default-src, script-src, object-src, image-src, medi
+a-src, style-src,
+ []
+
+) (./evaluation.tex <before-csp23.jpg, id=60, 1174.3875pt x 688.5725pt>
+File: before-csp23.jpg Graphic file (type jpg)
+
+<use before-csp23.jpg> <after-csp23.jpg, id=61, 1425.325pt x 836.12375pt>
+File: after-csp23.jpg Graphic file (type jpg)
+
+<use after-csp23.jpg> [6]) (./related.tex
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
-) (./conclusion.tex) (./paper.bbl [5]) (./appendix.tex [6]
+ [7 <./before-csp23.jpg> <./after-csp23.jpg>]) (./conclusion.tex) (./paper.bbl)
+ (./appendix.tex [8]
 Overfull \hbox (11.71024pt too wide) in paragraph at lines 9--11
  \OT1/ptm/b/n/10 In-ferred CSP pol-icy for www.facebook.com[] \OT1/ptm/m/n/10 F
-ig-ure 5[] shows an in-ferred CSP pol-icy by UserCSP for $\OT1/pcr/m/n/10 www .
+ig-ure 8[] shows an in-ferred CSP pol-icy by UserCSP for $\OT1/pcr/m/n/10 www .
  facebook .
  []
 
-) [7] (./paper.aux) ) 
+) [9] (./paper.aux) ) 
 Here is how much of TeX's memory you used:
- 3557 strings out of 495061
- 48023 string characters out of 1182621
- 114357 words of memory out of 3000000
- 6658 multiletter control sequences out of 15000+50000
+ 3576 strings out of 495061
+ 48354 string characters out of 1182621
+ 115381 words of memory out of 3000000
+ 6673 multiletter control sequences out of 15000+50000
  23719 words of font info for 46 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  29i,9n,32p,591b,288s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -446,9 +455,9 @@ ublic/amsfonts/cm/cmr6.pfb></usr/share/texmf-texlive/fonts/type1/urw/courier/uc
 rr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmb8a.pfb></usr/share
 /texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-texlive/fonts
 /type1/urw/times/utmri8a.pfb>
-Output written on paper.pdf (7 pages, 222846 bytes).
+Output written on paper.pdf (9 pages, 1563805 bytes).
 PDF statistics:
- 92 PDF objects out of 1000 (max. 8388607)
+ 102 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 31 words of extra memory for PDF output out of 10000 (max. 10000000)
 
