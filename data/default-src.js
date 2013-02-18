@@ -183,7 +183,7 @@ function listenData(evt) {
             if (tokens[i] === "'self'" || tokens[i] ==="self") {
                 insertItemInList(tokens[i]);
                 continue;
-            }   
+            }  
             if (text.match(myRegexp)) {       
                 var wildcardIndex = tokens[i].indexOf('*');
                 if (wildcardIndex != -1) { //hostname wildcard check
