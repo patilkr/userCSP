@@ -730,7 +730,12 @@ function changeDirective(event, curDirID) {
 
         // Make sure that we updated userCSPAll if user added or removed rules
         var Result = "";
-        Result = policyToPrint(userCSPArray,selectedDomain);
+        try { //special case: "default-src" is not set by user
+            if (!userCSPArray[selectedDomain][0]) {
+                userCSPArray[selectedDomain][0] = "'self'";
+            }
+        } catch (e) { }
+        Result = policyToPrint(userCSPArray, selectedDomain);
         userCSPAll[selectedDomain] = Result;
 
         // load user specified csp
@@ -990,7 +995,7 @@ function restoreCSPRules() {
 //---------------------------------------------------------------------
 // Combine Strict and Combine Loose Implementation
 
-function policyToPrint(cspRuleArray,selectedDomain) {
+function policyToPrint(cspRuleArray, selectedDomain) {
     var Result = "";
 
     for(var j=0; j<11; j++) {
@@ -1288,7 +1293,12 @@ function applyCombinedRules() {
     }else {
         if (!userCSPAll[selectedDomain]) {
             var Result = "";
-            Result = policyToPrint(userCSPArray,selectedDomain);
+            try { //special case: "default-src" is not set by user
+                if (!userCSPArray[selectedDomain][0]) {
+                    userCSPArray[selectedDomain][0] = "'self'";
+                }
+            } catch (e) { }
+            Result = policyToPrint(userCSPArray, selectedDomain);
             userCSPAll[selectedDomain] = Result;
         } else { userRules = userCSPAll[selectedDomain]; }
     }
