@@ -732,7 +732,7 @@ function changeDirective(event, curDirID) {
         var Result = "";
         try { //special case: "default-src" is not set by user
             if (!userCSPArray[selectedDomain][0]) {
-                userCSPArray[selectedDomain][0] = "'self'";
+                userCSPArray[selectedDomain][0] = "*";
             }
         } catch (e) { }
         Result = policyToPrint(userCSPArray, selectedDomain);
