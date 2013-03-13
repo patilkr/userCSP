@@ -17,7 +17,7 @@
 // user/websiteCSPArray[domainName][5] = style-src
 // user/websiteCSPArray[domainName][6] = frame-src
 // user/websiteCSPArray[domainName][7] = font-src
-// user/websiteCSPArray[domainName][8] = xhr-src
+// user/websiteCSPArray[domainName][8] = xhr-src / connect-src
 // user/websiteCSPArray[domainName][9] = frame-ancestors
 // user/websiteCSPArray[domainName][10] = report-uri
 // userCSPArray[][11] = website/user/combinS/combineL rules
@@ -118,7 +118,7 @@ var inferCSPAll = {}; // stores infer policy for website
     <li id="Style-Src"><a  href="#" onclick="changeDirective(this, 5);">style-src</a></li>
     <li id="Frame-Src"><a  href="#" onclick="changeDirective(this, 6);">frame-src</a></li>
     <li id="Font-Src"><a  href="#" onclick="changeDirective(this, 7);">font-src</a></li>
-    <li id="Xhr-Src"><a  href="#" onclick="changeDirective(this, 8);">xhr-src</a></li>
+    <li id="Connect-Src"><a  href="#" onclick="changeDirective(this, 8);">connect-src</a></li>
     <li id="Frame-Ancestors"><a  href="#" onclick="changeDirective(this, 9);">frame-ancestors</a></li>
     <li id="Report-uri"><a  href="#" onclick="changeDirective(this, 10);">Report-uri</a></li>
     <li id="Help"><a  href="#" onclick="changeDirective(this, 12);">Help</a></li>
@@ -133,7 +133,7 @@ var inferCSPAll = {}; // stores infer policy for website
     <!--   <option value="5">style-src</option> -->
     <!--   <option value="6">frame-src</option> -->
     <!--   <option value="7">font-src</option> -->
-    <!--   <option value="8">xhr-src</option> -->
+    <!--   <option value="8">connect-src</option> -->
     <!--   <option value="9">frame-ancestors</option> -->
     <!-- </select> -->
 

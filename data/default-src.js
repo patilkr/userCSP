@@ -542,9 +542,9 @@ function changeDirectiveClass(id, flag) {
         break;
     case 8:
         if (!flag) 
-            document.getElementById("Xhr-Src").className = "";
+            document.getElementById("Connect-Src").className = "";
         else
-            document.getElementById("Xhr-Src").className = "current";
+            document.getElementById("Connect-Src").className = "current";
         break;
     case 9:
         if (!flag) 
@@ -1057,9 +1057,9 @@ function policyToPrint(cspRuleArray, selectedDomain) {
         case 8:
             if (cspRuleArray[selectedDomain][j] ) {
                 if (Result != "")
-                    Result += "xhr-src "+cspRuleArray[selectedDomain][j]+"; ";
+                    Result += "connect-src "+cspRuleArray[selectedDomain][j]+"; ";
                 else
-                    Result = "xhr-src " + cspRuleArray[selectedDomain][j]+"; ";
+                    Result = "connect-src " + cspRuleArray[selectedDomain][j]+"; ";
             }break;
         case 9:
             if (cspRuleArray[selectedDomain][j] ) {
@@ -1179,7 +1179,7 @@ function loosePolicyToPrint(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedD
             myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "font-src ");              
             break;
         case 8:
-            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "xhr-src ");               
+            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "connect-src ");               
             break;
         case 9:
              myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "frame-ancestors ");
@@ -1436,9 +1436,9 @@ function applyCombinedRules() {
 //             return "";
 //         break;
 //     case 8:
-//         var n = cspRules.search("xhr-src");
+//         var n = cspRules.search("connect-src");
 //         if (n != -1) {
-//             n += 7;
+//             n += 11;
 //             var k = cspRules.indexOf(";", n);
 //             if (k != -1) {
 //                 return cspRules.substring(n, k);
