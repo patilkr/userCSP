@@ -141,7 +141,7 @@ function listenData(evt) {
             document.getElementById("rule1").value = ""; 
             return;
         }
-        if (text ==="none") {
+        if (text === "none") {
             insertItemInList("'none'");
             document.getElementById("rule1").value = ""; 
             return;
@@ -156,8 +156,30 @@ function listenData(evt) {
             document.getElementById("rule1").value = ""; 
             return;
         }
-        if (text ==="self") {
+        if (text === "self") {
             insertItemInList("'self'");
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+        // For "script-src" or "style-src" only 'unsafe-inline' accepted
+        if (text === "'unsafe-inline'" && (previousTabId == 1 || previousTabId == 5) ) {  
+            insertItemInList("'unsafe-inline'");
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+         if (text === "unsafe-inline" && (previousTabId == 1 || previousTabId == 5) ) {  
+            insertItemInList("'unsafe-inline'");
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+        // 'unsafe-eval' i/p accepted only for "script-src" or "style-src" 
+        if (text === "'unsafe-eval'" && (previousTabId == 1 || previousTabId == 5) ) {  
+            insertItemInList("'unsafe-eval'");
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+         if (text === "unsafe-eval" && (previousTabId == 1 || previousTabId == 5) ) {  
+            insertItemInList("'unsafe-eval'");
             document.getElementById("rule1").value = ""; 
             return;
         }
@@ -171,7 +193,7 @@ function listenData(evt) {
         var tokens = text.split(' ');
         for (var i in tokens) {
             if (tokens[i] === "" || tokens[i] === " ") continue;
-            if (tokens[i] === "'none'" || tokens[i] ==="none") {
+            if (tokens[i] === "'none'" || tokens[i] === "none") {
                 insertItemInList(tokens[i]);
                 continue;
             }
@@ -180,10 +202,19 @@ function listenData(evt) {
                 document.getElementById("rule1").value = ""; 
                 continue;
             }
-            if (tokens[i] === "'self'" || tokens[i] ==="self") {
+            if (tokens[i] === "'self'" || tokens[i] === "self") {
                 insertItemInList(tokens[i]);
                 continue;
             }  
+            if ((previousTabId == 1 || previousTabId == 5) && (tokens[i] === "'unsafe-eval'" || tokens[i] === "unsafe-eval")) {               
+                    insertItemInList(tokens[i]);
+                    continue;               
+            }
+            if ((previousTabId == 1 || previousTabId == 5) && (tokens[i] === "'unsafe-inline'" || tokens[i] === "unsafe-inline")) {               
+                    insertItemInList(tokens[i]);
+                    continue;               
+            }
+
             if (text.match(myRegexp)) {       
                 var wildcardIndex = tokens[i].indexOf('*');
                 if (wildcardIndex != -1) { //hostname wildcard check
