@@ -68,42 +68,42 @@ function rulesToApply(id) {
 // } //end of "swapCSPStateForSelectedDomain" function
 
 
-// Function to store inline Script Decision
-function inlineScriptRule(state) {
-    dump("\n Inline Script should be (0=false, 1 = true)= "+state);
+// // Function to store inline Script Decision
+// function inlineScriptRule(state) {
+//     dump("\n Inline Script should be (0=false, 1 = true)= "+state);
     
-    var selectedDomain = getSelectedDomain();
-    try {
-        if (!userCSPArray || !userCSPArray[selectedDomain]) {
-            userCSPArray[selectedDomain] = new Array(15);
-        }
-    } catch (e) {}
+//     var selectedDomain = getSelectedDomain();
+//     try {
+//         if (!userCSPArray || !userCSPArray[selectedDomain]) {
+//             userCSPArray[selectedDomain] = new Array(15);
+//         }
+//     } catch (e) {}
 
-        if (state)
-            userCSPArray[selectedDomain][12] = true;
-        else
-            userCSPArray[selectedDomain][12] = false;
+//         if (state)
+//             userCSPArray[selectedDomain][12] = true;
+//         else
+//             userCSPArray[selectedDomain][12] = false;
 
-} // end of inlineScriptRule() funciton
+// } // end of inlineScriptRule() funciton
 
 
-// Function to store inline Eval Decision
-function inlineEvalRule(state) {
-    // dump("\n Inline Eval should be (0=false, 1 = true)= "+state);
+// // Function to store inline Eval Decision
+// function inlineEvalRule(state) {
+//     // dump("\n Inline Eval should be (0=false, 1 = true)= "+state);
     
-    var selectedDomain = getSelectedDomain();
-    try {
-        if (!userCSPArray || !userCSPArray[selectedDomain]) {
-            userCSPArray[selectedDomain] = new Array(15);
-        }
-    } catch (e) {}
+//     var selectedDomain = getSelectedDomain();
+//     try {
+//         if (!userCSPArray || !userCSPArray[selectedDomain]) {
+//             userCSPArray[selectedDomain] = new Array(15);
+//         }
+//     } catch (e) {}
 
-        if (state)
-            userCSPArray[selectedDomain][14] = true;
-        else
-            userCSPArray[selectedDomain][14] = false;
+//         if (state)
+//             userCSPArray[selectedDomain][14] = true;
+//         else
+//             userCSPArray[selectedDomain][14] = false;
 
-} // end of inlineEvalRule() funciton
+// } // end of inlineEvalRule() funciton
 
 
 // Helper function to remove Spaces From a Text Field Input
@@ -366,10 +366,10 @@ function getDomainChoice(evt) {
             // make bydefault state to Enable
             userCSPArray[selectedDomain][11] = 1;
 
-            // bydefaule disallow inline scripts
-            userCSPArray[selectedDomain][12] = false;
-            // bydefaule disallow inline eval
-            userCSPArray[selectedDomain][14] = false;
+            // // bydefaule disallow inline scripts
+            // userCSPArray[selectedDomain][12] = false;
+            // // bydefaule disallow inline eval
+            // userCSPArray[selectedDomain][14] = false;
 
             //   dump("\n new userCSP arrary is created for = "+selectedDomain);
         }   
@@ -473,10 +473,10 @@ function helperToStore(domainName) {
         userCSPArray[domainName][11] = 1; 
         document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
         
-        // bydefault disallow inline scripts
-        userCSPArray[selectedDomain][12] = false;
-        // bydefault disallow inline evals
-        userCSPArray[selectedDomain][14] = false;
+        // // bydefault disallow inline scripts
+        // userCSPArray[selectedDomain][12] = false;
+        // // bydefault disallow inline evals
+        // userCSPArray[selectedDomain][14] = false;
 
         // dump("\n userCSP arrary is created ");
     }      
@@ -799,16 +799,16 @@ function changeDirective(event, curDirID) {
             break;
         } // end of switch
 
-        // Inline Script check
-        if (userCSPArray[selectedDomain][12] == true || userCSPArray[selectedDomain][12] == "true") {
-            document.getElementById("inlineScriptRuleBtnTrue").checked = true;          } else {
-            document.getElementById("inlineScriptRuleBtnFalse").checked = true;                      
-        }
-        // inline eval check
-        if (userCSPArray[selectedDomain][14] == true || userCSPArray[selectedDomain][14] == "true") {
-            document.getElementById("inlineEvalRuleBtnTrue").checked = true;          } else {
-            document.getElementById("inlineEvalRuleBtnFalse").checked = true;                      
-        }
+        // // Inline Script check
+        // if (userCSPArray[selectedDomain][12] == true || userCSPArray[selectedDomain][12] == "true") {
+        //     document.getElementById("inlineScriptRuleBtnTrue").checked = true;          } else {
+        //     document.getElementById("inlineScriptRuleBtnFalse").checked = true;                      
+        // }
+        // // inline eval check
+        // if (userCSPArray[selectedDomain][14] == true || userCSPArray[selectedDomain][14] == "true") {
+        //     document.getElementById("inlineEvalRuleBtnTrue").checked = true;          } else {
+        //     document.getElementById("inlineEvalRuleBtnFalse").checked = true;                      
+        // }
 
         // End of dynamicAllTabDiv
     } else if (previousTabId == 11) {
@@ -1002,16 +1002,16 @@ function restoreCSPRules() {
     else
         document.getElementById("combinedStrictCSP").textContent = "";
     
-    // Restore Inline Script check
-    if (userCSPArray[selectedDomain][12] == true || userCSPArray[selectedDomain][12] == "true") {
-        document.getElementById("inlineScriptRuleBtnTrue").checked = true;          } else {
-        document.getElementById("inlineScriptRuleBtnFalse").checked = true;                      
-    }
-    // inline eval check
-    if (userCSPArray[selectedDomain][14] == true || userCSPArray[selectedDomain][14] == "true") {
-        document.getElementById("inlineEvalRuleBtnTrue").checked = true;          } else {
-        document.getElementById("inlineEvalRuleBtnFalse").checked = true;                      
-    }
+    // // Restore Inline Script check
+    // if (userCSPArray[selectedDomain][12] == true || userCSPArray[selectedDomain][12] == "true") {
+    //     document.getElementById("inlineScriptRuleBtnTrue").checked = true;          } else {
+    //     document.getElementById("inlineScriptRuleBtnFalse").checked = true;                      
+    // }
+    // // inline eval check
+    // if (userCSPArray[selectedDomain][14] == true || userCSPArray[selectedDomain][14] == "true") {
+    //     document.getElementById("inlineEvalRuleBtnTrue").checked = true;          } else {
+    //     document.getElementById("inlineEvalRuleBtnFalse").checked = true;                      
+    // }
 
     // // Infer CSP rules
     if (inferCSPAll[selectedDomain]) {
@@ -1260,7 +1260,7 @@ function combineStrict() {
         return;
 
     
-    Result = policyToPrint(userCSPArray,selectedDomain);
+    Result = policyToPrint(userCSPArray, selectedDomain);
     userCSPAll[selectedDomain] = Result;
     
     dump("\n Complete UserCSP = " + userCSPAll[selectedDomain]);

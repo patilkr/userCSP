@@ -56,8 +56,8 @@ addon.port.on("addHostName", function (hName) {
     document.getElementById("combinedStrictCSP").textContent = "";
     document.getElementById("combinedLooseCSP").textContent = "";
     document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
-    document.getElementById("inlineScriptRuleBtnFalse").checked = true;
-    document.getElementById("inlineEvalRuleBtnFalse").checked = true;
+    // document.getElementById("inlineScriptRuleBtnFalse").checked = true;
+    // document.getElementById("inlineEvalRuleBtnFalse").checked = true;
 
     //2. Clear Directive contents
     document.getElementById("rule1").value = "";
@@ -85,10 +85,10 @@ addon.port.on("addHostName", function (hName) {
         userCSPArray[anOption.value][11] = 1; 
         document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
 
-        // Bydefault disallow inline scripts
-        userCSPArray[anOption.value][12] = false;
-        // Bydefault disallow inline evals
-        userCSPArray[anOption.value][14] = false;
+        // // Bydefault disallow inline scripts
+        // userCSPArray[anOption.value][12] = false;
+        // // Bydefault disallow inline evals
+        // userCSPArray[anOption.value][14] = false;
 
         //dump("\n userCSP arrary is created for domain="+anOption.value);
     }   
@@ -109,10 +109,10 @@ addon.port.on("addHostName", function (hName) {
                 userCSPArray[anOption.value][11] = 1; 
                 document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
 
-                // Bydefault disallow inline scripts
-                userCSPArray[anOption.value][12] = false;
-                // Bydefault disallow inline evals
-                userCSPArray[anOption.value][14] = false;
+                // // Bydefault disallow inline scripts
+                // userCSPArray[anOption.value][12] = false;
+                // // Bydefault disallow inline evals
+                // userCSPArray[anOption.value][14] = false;
 		            
                 //dump("\n userCSP arrary is created for domain="+anOption.value);
 	          }  
