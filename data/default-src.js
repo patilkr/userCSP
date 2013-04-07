@@ -2,6 +2,8 @@
  *   PATIL Kailas <patilkr24@gmail.com>
 */
 
+
+
 // Helper function to get the name of the selected domain in drop-down list
 function getSelectedDomain() {
     var dName = document.getElementById("domainName");    
@@ -766,7 +768,7 @@ function changeDirective(event, curDirID) {
                 userCSPArray[selectedDomain][0] = "*";
             }
         } catch (e) { }
-        Result = policyToPrint(userCSPArray, selectedDomain);
+        Result = addDirNameToPrint(userCSPArray, selectedDomain);
         userCSPAll[selectedDomain] = Result;
 
         // load user specified csp
@@ -1026,92 +1028,17 @@ function restoreCSPRules() {
 //---------------------------------------------------------------------
 // Combine Strict and Combine Loose Implementation
 
-function policyToPrint(cspRuleArray, selectedDomain) {
+function addDirNameToPrint(cspRuleArray, selectedDomain) {
     var Result = "";
 
-    for(var j=0; j<11; j++) {
-        switch(j) {
-        case 0:
-            if (cspRuleArray[selectedDomain][j] )
-                Result = "default-src " + cspRuleArray[selectedDomain][j] + "; ";
-            break;
-        case 1:
-            if (cspRuleArray[selectedDomain][j] ) {
-                if (Result != "")
-                    Result += "script-src "+cspRuleArray[selectedDomain][j] +"; ";
-                else
-                    Result = "script-src " + cspRuleArray[selectedDomain][j]+"; ";
-            }
-            break;
-        case 2:
-            if (cspRuleArray[selectedDomain][j] ) {
-                if (Result != "")
-                    Result += "object-src "+cspRuleArray[selectedDomain][j]+"; ";
-                else
-                    Result = "object-src " + cspRuleArray[selectedDomain][j]+"; ";
-            }break;
-        case 3:
-            if (cspRuleArray[selectedDomain][j] ) {
-                if (Result != "")
-                    Result += "img-src "+cspRuleArray[selectedDomain][j]+"; ";
-                else
-                    Result = "img-src " + cspRuleArray[selectedDomain][j]+"; ";
-            }break;
-        case 4:
-            if (cspRuleArray[selectedDomain][j]) {
-                if (Result != "")
-                    Result += "media-src "+cspRuleArray[selectedDomain][j]+"; ";
-                else
-                    Result = "media-src " + cspRuleArray[selectedDomain][j]+"; ";
-            }break;
-        case 5:
-            if (cspRuleArray[selectedDomain][j]) {
-                if (Result != "")
-                    Result += "style-src "+cspRuleArray[selectedDomain][j]+"; ";
-                else
-                    Result = "style-src " + cspRuleArray[selectedDomain][j]+"; ";
-            } break;
-        case 6:
-            if (cspRuleArray[selectedDomain][j] ) {
-                if (Result != "")
-                    Result += "frame-src "+cspRuleArray[selectedDomain][j]+"; ";
-                else
-                    Result = "frame-src " + cspRuleArray[selectedDomain][j]+"; ";
-            }break;
-        case 7:
-            if (cspRuleArray[selectedDomain][j] ) {
-                if (Result != "")
-                    Result += "font-src "+cspRuleArray[selectedDomain][j]+"; ";
-                else
-                    Result = "font-src " + cspRuleArray[selectedDomain][j]+"; ";
-            }break;
-        case 8:
-            if (cspRuleArray[selectedDomain][j] ) {
-                if (Result != "")
-                    Result += "connect-src "+cspRuleArray[selectedDomain][j]+"; ";
-                else
-                    Result = "connect-src " + cspRuleArray[selectedDomain][j]+"; ";
-            }break;
-        case 9:
-            if (cspRuleArray[selectedDomain][j] ) {
-                if (Result != "")
-                    Result += "frame-ancestors "+cspRuleArray[selectedDomain][j]+"; ";
-                else
-                    Result = "frame-ancestors " + cspRuleArray[selectedDomain][j]+"; ";
-            } break;
-        case 10:
-            if (cspRuleArray[selectedDomain][j] ) {
-                if (Result != "")
-                    Result += "report-uri "+cspRuleArray[selectedDomain][j]+"; ";
-                else
-                    Result = "report-uri " + cspRuleArray[selectedDomain][j]+"; ";
-            } break;            
-        } // end of switch(j) Loop
-    } // end of For "j" Loop
+    for(var j = 0; j < 11; j++) {
+        if (cspRuleArray[selectedDomain][j] ) {
+            Result += cspDirList[j] + " " + cspRuleArray[selectedDomain][j] + "; ";  
+        }
+    }
 
     return Result;
-
-} //end of "policyToPrint" Function
+} // end of function addDirNameToPrint
 
 
 //helper function to comine policy loosely
@@ -1182,61 +1109,29 @@ function combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelecte
 function loosePolicyToPrint(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain) {
     var myResult = "";
     var flag = false;
+    var dirName = "";
 
-    for(var j=0; j<11; j++) {
-        switch(j) {
-        case 0:
-            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "default-src ");           
-            break;
-        case 1:
-            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "script-src ");
-            break;
-        case 2:
-            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "object-src ");
-            break;
-        case 3:
-            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "img-src ");
-            break;
-        case 4:
-             myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "media-src ");
-            break;
-        case 5:
-            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "style-src ");
-            break;
-        case 6:
-            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "frame-src ");             
-            break;
-        case 7:
-            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "font-src ");              
-            break;
-        case 8:
-            myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "connect-src ");               
-            break;
-        case 9:
-             myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, "frame-ancestors ");
-            break;
-        case 10:
-            if (tempUserCSPArray[tempSelectedDomain][j] && tempUserCSPArray[tempSelectedDomain][j] != "") {
-                myResult += "report-uri " + tempUserCSPArray[tempSelectedDomain][j];
-                flag = true;
-            }
-            if (tempWebsiteCSPArray[tempSelectedDomain][j] && tempWebsiteCSPArray[tempSelectedDomain][j] != "") {
-                if (!flag)
-                    myResult += "report-uri " + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                else
-                    myResult += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
-                flag = false;
-            } 
-            break;
+    for(var j = 0; j < 10; j++) {
+        dirName = cspDirList[j] + " ";
+        myResult += combineLooselyHelper(tempUserCSPArray, tempWebsiteCSPArray, tempSelectedDomain, j, dirName);         
+    }
 
-        } // end of switch(j) Loop
-        
-        if (flag) {
-            Result += ";";
-            flag = false; // reset flag
-        }
+    if (tempUserCSPArray[tempSelectedDomain][j] && tempUserCSPArray[tempSelectedDomain][j] != "") {
+        myResult += "report-uri " + tempUserCSPArray[tempSelectedDomain][j];
+        flag = true;
+    }
+    if (tempWebsiteCSPArray[tempSelectedDomain][j] && tempWebsiteCSPArray[tempSelectedDomain][j] != "") {
+        if (!flag)
+            myResult += "report-uri " + tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
+        else
+            myResult += tempWebsiteCSPArray[tempSelectedDomain][j]+"; ";
+        flag = false;
+    } 
 
-    } // end of For "j" Loop
+    if (flag) {
+        Result += ";";
+        flag = false; // reset flag
+    }
 
     return myResult;
 
@@ -1260,7 +1155,7 @@ function combineStrict() {
         return;
 
     
-    Result = policyToPrint(userCSPArray, selectedDomain);
+    Result = addDirNameToPrint(userCSPArray, selectedDomain);
     userCSPAll[selectedDomain] = Result;
     
     dump("\n Complete UserCSP = " + userCSPAll[selectedDomain]);
@@ -1329,7 +1224,7 @@ function applyCombinedRules() {
                     userCSPArray[selectedDomain][0] = "'self'";
                 }
             } catch (e) { }
-            Result = policyToPrint(userCSPArray, selectedDomain);
+            Result = addDirNameToPrint(userCSPArray, selectedDomain);
             userCSPAll[selectedDomain] = Result;
         } else { userRules = userCSPAll[selectedDomain]; }
     }
@@ -1357,156 +1252,6 @@ function applyCombinedRules() {
 } // end of "applyCombinedRules" function
 
 
-// // helper function to "applyCombinedRules"
-// // It stores csp policy string into usercspArray format to send to d/b
-// function combinedCSPFilter(cspRules, index) {
-// switch(index)
-//     {
-//     case 0:
-//         var n = cspRules.search("default-src");
-//         if (n != -1) {
-//             n += 11;
-//             var k = cspRules.indexOf(";", n);
-//             if (k != -1) {
-//                 return cspRules.substring(n, k);
-//             } else {
-//                 return cspRules.substring(n);
-//             }
-//         } else 
-//             return "";
-//         break;
-//     case 1:
-//         var n = cspRules.search("script-src");
-//         if (n != -1) {
-//             n += 10;
-//             var k = cspRules.indexOf(";", n);
-//             if (k != -1) {
-//                 return cspRules.substring(n, k);
-//             } else {
-//                 return cspRules.substring(n);
-//             }
-//         } else
-//             return "";
-//         break;
-//     case 2:
-//         var n = cspRules.search("object-src");
-//         if (n != -1) {
-//             n += 10;
-//             var k = cspRules.indexOf(";", n);
-//             if (k != -1) {
-//                 return cspRules.substring(n, k);
-//             } else {
-//                 return cspRules.substring(n);
-//             }
-//         } else
-//             return "";
-//         break;
-//     case 3:
-//         var n = cspRules.search("img-src");
-//         if (n != -1) {
-//             n += 7;
-//             var k = cspRules.indexOf(";", n);
-//             if (k != -1) {
-//                 return cspRules.substring(n, k);
-//             } else {
-//                 return cspRules.substring(n);
-//             }
-//         } else
-//             return "";
-//         break;
-//     case 4:
-//         var n = cspRules.search("media-src");
-//         if (n != -1) {
-//             n += 9;
-//             var k = cspRules.indexOf(";", n);
-//             if (k != -1) {
-//                 return cspRules.substring(n, k);
-//             } else {
-//                 return cspRules.substring(n);
-//             }
-//         } else
-//             return "";
-//         break;
-//     case 5:
-//         var n = cspRules.search("style-src");
-//         if (n != -1) {
-//             n += 9;
-//             var k = cspRules.indexOf(";", n);
-//             if (k != -1) {
-//                 return cspRules.substring(n, k);
-//             } else {
-//                 return cspRules.substring(n);
-//             }
-//         } else
-//             return "";
-//         break;
-//     case 6:
-//         var n = cspRules.search("frame-src");
-//         if (n != -1) {
-//             n += 9;
-//             var k = cspRules.indexOf(";", n);
-//             if (k != -1) {
-//                 return cspRules.substring(n, k);
-//             } else {
-//                 return cspRules.substring(n);
-//             }
-//         } else
-//             return "";
-//         break;
-//     case 7:
-//         var n = cspRules.search("font-src");
-//         if (n != -1) {
-//             n += 8;
-//             var k = cspRules.indexOf(";", n);
-//             if (k != -1) {
-//                 return cspRules.substring(n, k);
-//             } else {
-//                 return cspRules.substring(n);
-//             }
-//         } else
-//             return "";
-//         break;
-//     case 8:
-//         var n = cspRules.search("connect-src");
-//         if (n != -1) {
-//             n += 11;
-//             var k = cspRules.indexOf(";", n);
-//             if (k != -1) {
-//                 return cspRules.substring(n, k);
-//             } else {
-//                 return cspRules.substring(n);
-//             }
-//         } else
-//             return "";
-//         break;
-//     case 9:
-//         var n = cspRules.search("frame-ancestors");
-//         if (n != -1) {
-//             n += 15;
-//             var k = cspRules.indexOf(";", n);
-//             if (k != -1) {
-//                 return cspRules.substring(n, k);
-//             } else {
-//                 return cspRules.substring(n);
-//             }
-//         } else
-//             return "";
-//         break;
-//      case 10:
-//         var n = cspRules.search("report-uri");
-//         if (n != -1) {
-//             n += 10;
-//             var k = cspRules.indexOf(";", n);
-//             if (k != -1) {
-//                 return cspRules.substring(n, k);
-//             } else {
-//                 return cspRules.substring(n);
-//             }
-//         } else
-//             return "";
-//         break;   
-//     } // end of switch statement
-// }// end of combinedCSPFilter function
 
 // Sets inferred CSP policy as user rules
 function setInferCSPAsUserCSP() {

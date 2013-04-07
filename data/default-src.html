@@ -8,6 +8,10 @@
 
 <!-- Global Tables to store user CSP and website CSP -->
 <script>
+//Directive name list
+var cspDirList = ["default-src", "script-src", "object-src", "img-src", "media-src", "style-src", "frame-src", "font-src", "connect-src", "frame-ancestors", "report-uri"];
+
+
 // Two dimensional array structure for userCSPArray and websiteCSPArray
 // user/websiteCSPArray[domainName][0] = default-src 
 // user/websiteCSPArray[domainName][1] = script-src
