@@ -257,7 +257,7 @@ addon.port.on("setInferAsUserCSP", function (webDomain, inferredCSPArray) {
         return;
 
     if (selectedDomain.match(webDomain)) {
-        for (var i=0; i<10; i++) {
+        for (var i = 0; i < 10; i++) {
             if (inferredCSPArray[selectedDomain][i] != null || inferredCSPArray[selectedDomain][i] != "null") {
                 userCSPArray[selectedDomain][i] = inferredCSPArray[selectedDomain][i];
             } else {

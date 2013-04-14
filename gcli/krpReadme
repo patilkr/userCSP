@@ -1,3 +1,0 @@
-To invoke gcli: Shift+F2
-
-GCLI commands are stored in .mozcmd files. The path of .mozcmd files should be stored in "devtools.commands.dir" variable in about:config settings
