@@ -266,3 +266,4 @@ addon.port.on("setInferAsUserCSP", function (webDomain, inferredCSPArray) {
         }
     }
 });
+
