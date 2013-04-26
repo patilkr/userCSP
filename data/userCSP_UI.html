@@ -109,11 +109,16 @@ var inferCSPAll = {}; // stores infer policy for website
 </p>
 
 <div class="content">
-    <h2 id="directiveName">Directives</h2>
     
     <ol id="toc">
     <li id="All-policies"><a  href="#" onclick="changeDirective(this, -1);">All</a></li>
     <li id="Infer-Policy"><a  href="#" onclick="changeDirective(this, 11);">Infer-CSP</a></li>    
+    <li id="Help"><a  href="#" onclick="changeDirective(this, 12);">Help</a></li>
+    </ol>
+
+    <h2 id="directiveName">Directives</h2> 
+
+    <ol id="toc">
     <li id="Default-Src" class="current"><a  href="#" onclick="changeDirective(this, 0);">default-src</a></li>
     <li id="Script-Src"><a  href="#" onclick="changeDirective(this, 1);">script-src</a></li>
     <li id="Object-Src"><a  href="#" onclick="changeDirective(this, 2);">object-src</a></li>
@@ -125,7 +130,6 @@ var inferCSPAll = {}; // stores infer policy for website
     <li id="Connect-Src"><a  href="#" onclick="changeDirective(this, 8);">connect-src</a></li>
     <li id="Frame-Ancestors"><a  href="#" onclick="changeDirective(this, 9);">frame-ancestors</a></li>
     <li id="Report-uri"><a  href="#" onclick="changeDirective(this, 10);">Report-uri</a></li>
-    <li id="Help"><a  href="#" onclick="changeDirective(this, 12);">Help</a></li>
 </ol>
 
      <!-- <select id="cspDirectives" style="width:220px" onchange="storeDirectiveData(this);"> -->
