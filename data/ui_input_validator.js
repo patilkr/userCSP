@@ -1029,17 +1029,17 @@ function restoreCSPRules() {
     } // end of switch
 
     // Restore "ALL" Tab contents
-    if (typeof(websiteCSPAll[selectedDomain]) != undefined)
+    if (typeof(websiteCSPAll[selectedDomain]) !== 'undefined')
         document.getElementById("websiteCompleteCSP").textContent = websiteCSPAll[selectedDomain];
     else
         document.getElementById("websiteCompleteCSP").textContent = "";
   
-    if(typeof(userCSPAll[selectedDomain]) != undefined)
+    if(typeof(userCSPAll[selectedDomain]) !== 'undefined')
         document.getElementById("userCompleteCSP").textContent =  userCSPAll[selectedDomain];
     else
         document.getElementById("userCompleteCSP").textContent = "";
 
-    if (typeof(userCSPArray[selectedDomain][13]) != undefined)
+    if (typeof(userCSPArray[selectedDomain][13]) !== 'undefined')
         document.getElementById("combinedStrictCSP").textContent = userCSPArray[selectedDomain][13];
     else
         document.getElementById("combinedStrictCSP").textContent = "";
@@ -1339,8 +1339,8 @@ function displayInferCSPInArray(selectedDomain) {
     // Now display Infer CSP in array format
     var parentElm = document.getElementById("inferredCSP");
     var htmlStr = "";
-    htmlStr = "<table width='400px' border='1' cellspacing='0' cellpadding='0'>";
-    htmlStr += "<tr><td style='width:125px'> <b>Directive</b> </td><td> <b>Policy</b> </td></tr>";
+    htmlStr += "<table width='500px' border='1' cellspacing='0' cellpadding='0'>";
+    htmlStr += "<tr><td style='width:130px'> <b>Directive</b> </td><td> <b>Policy</b> </td></tr>";
 
     // Add all directives
     for (var i = 0; i < 10; i++) {

@@ -195,8 +195,8 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
 
         // Infer CSP rules
         try {
-            if (typeof(inferRulesList) != undefined) {
-                if (typeof(inferRulesList[dNames.options[i].value]) != undefined)
+            if (typeof(inferRulesList) !== 'undefined') {
+                if (typeof(inferRulesList[dNames.options[i].value]) !== 'undefined')
                     inferCSPAll[dNames.options[i].value] = inferRulesList[dNames.options[i].value];
             }
         } catch(e) {
@@ -253,7 +253,7 @@ addon.port.on("setCombineStrict", function (strictCSP, webDomain) {
 addon.port.on("setInferAsUserCSP", function (webDomain, inferredCSPArray) {
     var selectedDomain = getSelectedDomain();
 
-    if (typeof(inferredCSPArray[webDomain]) == undefined) 
+    if (typeof(inferredCSPArray[webDomain]) === 'undefined') 
         return;
 
     if (selectedDomain.match(webDomain)) {
@@ -271,7 +271,7 @@ addon.port.on("setInferAsUserCSP", function (webDomain, inferredCSPArray) {
 addon.port.on("setInferCSPArray", function (webDomain, cspArray) {
     var selectedDomain = getSelectedDomain();
 
-    if (typeof(cspArray[webDomain]) == undefined) 
+    if (typeof(cspArray[webDomain]) === 'undefined') 
         return;
 
     if (selectedDomain.match(webDomain)) {
@@ -282,7 +282,7 @@ addon.port.on("setInferCSPArray", function (webDomain, cspArray) {
             inferCSPArray[webDomain] = new Array(10);
         }
         for (var i = 0; i < 10; i++) {
-            if (typeof(cspArray[webDomain][i]) == undefined) {
+            if (typeof(cspArray[webDomain][i]) === 'undefined') {
                 inferCSPArray[selectedDomain][i] = "";
             } else if (cspArray[selectedDomain][i] != null && cspArray[selectedDomain][i] != "null") {
                 inferCSPArray[selectedDomain][i] = cspArray[selectedDomain][i];
