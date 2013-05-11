@@ -56,33 +56,25 @@ var inferCSPAll = {}; // stores infer policy for website
  <!-- Script file to receive data from main add-on -->
  <script src="recv-data.js"></script>
 
+<!-- CSS Style Sheet to show buuble text effect -->
+ <style>
+.close-btn {
+    border: 2px solid #c2c2c2;
+    position: relative;
+    padding: 1px 5px;
+    top: -10px;
+    background-color: #605F61;
+    left: 1px;
+    border-radius: 20px;   
+}
 
- <!-- Inline script to give look and feel of Tab panel -->
- <!-- <script> -->
- <!--  function changeDirective(element) { -->
- <!--    // If user clicks on selcted tab then ignore it. -->
- <!--    if (element.parentNode.className === "current") -->
- <!--     return; -->
-
- <!--    // Look and feel of changing the CSP directive tab -->
- <!--    var liList = document.getElementById('toc').getElementsByTagName("li");     -->
- <!--    for (var i=0; i < liList.length; i++) { -->
- <!--      if (liList[i].id === element.parentNode.id) {                 -->
- <!--        liList[i].className="current"; -->
- <!--      } else  { -->
- <!--        liList[i].className=""; -->
- <!--      } -->
- <!--    } // end of FOR loop -->
-   
- <!--   // Change the title of the CSP directive tab -->
- <!--   document.getElementById('directiveName').textContent = element.parentNode.id; -->
-
- <!--   // Clear input elements -->
- <!--   document.getElementById("rule1").value = "";   -->
- <!--   document.getElementById("rule1UserList").options.length=0;     -->
- <!--  } // end of changeDirective function -->
- <!-- </script> -->
-
+.close-btn a {
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+</style>
 
 </head>
 <body>

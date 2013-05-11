@@ -316,6 +316,15 @@ function setLabelToEmptyString(labelId) {
     document.getElementById(labelId).textContent = "";
 }
 
+// display inferred CSP policy in UI
+function displayInferCSP(selectedDomain) {
+    if (inferCSPAll[selectedDomain]) {
+        document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
+    } else {
+        document.getElementById("inferredCSP").textContent = "";
+    }
+}
+
 // Get user choice for domain name from drop down box
 function getDomainChoice(evt) {
     var selectedDomain = getSelectedDomain();
@@ -432,12 +441,8 @@ function getDomainChoice(evt) {
     selectedDomain = getSelectedDomain();
     // remove text from label named "inferredCSP" 
     setLabelToEmptyString("inferredCSP");
-        
-    if (inferCSPAll[selectedDomain]) {
-        document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
-    } else {
-        document.getElementById("inferredCSP").textContent = "";
-    }
+    // Display inferCSP policy into add-on UI    
+    displayInferCSP(selectedDomain);   
 
 
 } // end of getDomainChoice() Function
@@ -688,11 +693,8 @@ function changeDirective(event, curDirID) {
         // remove text from label named "inferredCSP" 
         setLabelToEmptyString("inferredCSP");
         
-        if (inferCSPAll[selectedDomain]) {
-            document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
-        } else {
-            document.getElementById("inferredCSP").textContent = "";
-        }
+        // Display inferCSP policy into add-on UI    
+        displayInferCSP(selectedDomain);
 
 
         // Store curDirID for next reference
@@ -1004,23 +1006,16 @@ function restoreCSPRules() {
     else
         document.getElementById("combinedStrictCSP").textContent = "";
     
-    // // Restore Inline Script check
-    // if (userCSPArray[selectedDomain][12] == true || userCSPArray[selectedDomain][12] == "true") {
-    //     document.getElementById("inlineScriptRuleBtnTrue").checked = true;          } else {
-    //     document.getElementById("inlineScriptRuleBtnFalse").checked = true;                      
-    // }
-    // // inline eval check
-    // if (userCSPArray[selectedDomain][14] == true || userCSPArray[selectedDomain][14] == "true") {
-    //     document.getElementById("inlineEvalRuleBtnTrue").checked = true;          } else {
-    //     document.getElementById("inlineEvalRuleBtnFalse").checked = true;                      
-    // }
+    
+    // Display inferCSP policy into add-on UI    
+    displayInferCSP(selectedDomain);
 
-    // // Infer CSP rules
-    if (inferCSPAll[selectedDomain]) {
-        document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
-    } else {
-        document.getElementById("inferredCSP").textContent = "";
-    }
+    // // // Infer CSP rules
+    // if (inferCSPAll[selectedDomain]) {
+    //     document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
+    // } else {
+    //     document.getElementById("inferredCSP").textContent = "";
+    // }
 
 } // end of "restoreCSPRules" function
 
