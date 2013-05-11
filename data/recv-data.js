@@ -224,7 +224,7 @@ addon.port.on("rmHost", function (hName) {
     //dump("\n Need to remove "+hName+" from drop down box");
     var selectDomainList = document.getElementById("domainName");
     
-    for(var i=selectDomainList.options.length-1; i>=0; i--) {
+    for(var i = selectDomainList.options.length-1; i >= 0; i--) {
         if (hName.indexOf(selectDomainList.options[i].value) != -1) {
             selectDomainList.remove(i);
             break;
@@ -253,17 +253,46 @@ addon.port.on("setCombineStrict", function (strictCSP, webDomain) {
 addon.port.on("setInferAsUserCSP", function (webDomain, inferredCSPArray) {
     var selectedDomain = getSelectedDomain();
 
-    if (typeof(inferredCSPArray[webDomain])==undefined) 
+    if (typeof(inferredCSPArray[webDomain]) == undefined) 
         return;
 
     if (selectedDomain.match(webDomain)) {
         for (var i = 0; i < 10; i++) {
-            if (inferredCSPArray[selectedDomain][i] != null || inferredCSPArray[selectedDomain][i] != "null") {
+            if (inferredCSPArray[selectedDomain][i] != null && inferredCSPArray[selectedDomain][i] != "null") {
                 userCSPArray[selectedDomain][i] = inferredCSPArray[selectedDomain][i];
             } else {
                 userCSPArray[selectedDomain][i] ="";
             }
         }
+    }
+});
+
+// set Infered CSP array of a website to userCSP Array
+addon.port.on("setInferCSPArray", function (webDomain, cspArray) {
+    var selectedDomain = getSelectedDomain();
+
+    if (typeof(cspArray[webDomain]) == undefined) 
+        return;
+
+    if (selectedDomain.match(webDomain)) {
+        if (!inferCSPArray || inferCSPArray == null) {
+            inferCSPArray = {};
+        }
+        if (!inferCSPArray[webDomain]) {
+            inferCSPArray[webDomain] = new Array(10);
+        }
+        for (var i = 0; i < 10; i++) {
+            if (typeof(cspArray[webDomain][i]) == undefined) {
+                inferCSPArray[selectedDomain][i] = "";
+            } else if (cspArray[selectedDomain][i] != null && cspArray[selectedDomain][i] != "null") {
+                inferCSPArray[selectedDomain][i] = cspArray[selectedDomain][i];
+               // dump("\n inferCSPArray[]="+inferCSPArray[selectedDomain][i]);
+            } else {
+                inferCSPArray[selectedDomain][i] = "";
+            }
+        }
+        // Display CSP in array format
+        displayInferCSPInArray(selectedDomain);
     }
 });
 

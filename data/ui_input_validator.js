@@ -32,9 +32,9 @@ function rulesToApply(id) {
 
     userCSPArray[selectedDomain][11] = id;
 
-    if (id == 3) {
+    if (id === 3) {
         combineStrict();
-    } else if (id == 4) {
+    } else if (id === 4) {
         combineLoose();
     }
 
@@ -164,23 +164,23 @@ function listenData(evt) {
             return;
         }
         // For "script-src" or "style-src" only 'unsafe-inline' accepted
-        if (text === "'unsafe-inline'" && (previousTabId == 1 || previousTabId == 5) ) {  
+        if (text === "'unsafe-inline'" && (previousTabId === 1 || previousTabId === 5) ) {  
             insertItemInList("'unsafe-inline'");
             document.getElementById("rule1").value = ""; 
             return;
         }
-         if (text === "unsafe-inline" && (previousTabId == 1 || previousTabId == 5) ) {  
+         if (text === "unsafe-inline" && (previousTabId === 1 || previousTabId === 5) ) {  
             insertItemInList("'unsafe-inline'");
             document.getElementById("rule1").value = ""; 
             return;
         }
         // 'unsafe-eval' i/p accepted only for "script-src" or "style-src" 
-        if (text === "'unsafe-eval'" && (previousTabId == 1 || previousTabId == 5) ) {  
+        if (text === "'unsafe-eval'" && (previousTabId === 1 || previousTabId === 5) ) {  
             insertItemInList("'unsafe-eval'");
             document.getElementById("rule1").value = ""; 
             return;
         }
-         if (text === "unsafe-eval" && (previousTabId == 1 || previousTabId == 5) ) {  
+         if (text === "unsafe-eval" && (previousTabId === 1 || previousTabId === 5) ) {  
             insertItemInList("'unsafe-eval'");
             document.getElementById("rule1").value = ""; 
             return;
@@ -208,11 +208,11 @@ function listenData(evt) {
                 insertItemInList(tokens[i]);
                 continue;
             }  
-            if ((previousTabId == 1 || previousTabId == 5) && (tokens[i] === "'unsafe-eval'" || tokens[i] === "unsafe-eval")) {               
+            if ((previousTabId === 1 || previousTabId === 5) && (tokens[i] === "'unsafe-eval'" || tokens[i] === "unsafe-eval")) {               
                     insertItemInList(tokens[i]);
                     continue;               
             }
-            if ((previousTabId == 1 || previousTabId == 5) && (tokens[i] === "'unsafe-inline'" || tokens[i] === "unsafe-inline")) {               
+            if ((previousTabId === 1 || previousTabId === 5) && (tokens[i] === "'unsafe-inline'" || tokens[i] === "unsafe-inline")) {               
                     insertItemInList(tokens[i]);
                     continue;               
             }
@@ -316,8 +316,91 @@ function setLabelToEmptyString(labelId) {
     document.getElementById(labelId).textContent = "";
 }
 
+function removeInferredDomain(evt) {
+    var elem = document.getElementById('closeBtn'); 
+  //  dump("\n\n elem = "+evt.target); 
+    if (elem) {
+        // Remove node from UI
+        elem.parentNode.parentNode.removeChild(elem.parentNode);
+        // Remove text associated with it from inferCSPArray
+        // --TODO --
+    }
+    //evt.target.parentNode.parentNode.removeChild(evt.target.parentNode); 
+}
+
+// Dynamically show close button on mouseover event
+function addCloseBtn(elemId) {
+ // <span class='close-btn'> <a href="">X</a></span>
+    
+    // remove closeBtn if it exsits
+    try {
+        var elm = document.getElementById('closeBtn');
+        if (elm) {
+            elm.parentNode.removeChild(elm);
+        }
+    } catch (e) { }
+
+
+    var element = document.getElementById(elemId);
+
+    var newElm = document.createElement("span");
+    newElm.setAttribute('id', 'closeBtn');
+    newElm.setAttribute('class', 'close-btn');
+    element.appendChild(newElm);
+
+    var newElm1 = document.createElement("a");
+    newElm1.setAttribute('id', 'closeBtnText');
+    newElm1.setAttribute('href', '');
+    newElm1.textContent = "X";
+    newElm.appendChild(newElm1);
+
+    if(typeof document.addEventListener != 'undefined') {
+        document.getElementById('closeBtn').addEventListener('click', function(e) { removeInferredDomain(e); }, false);
+    } else {
+        document.getElementById('closeBtn').attachEvent('click', function(e) { removeInferredDomain(e); }, false);
+    }
+
+}
+
+// Display infer policy in Array format
+function displayInferCSPInArray(selectedDomain) {
+    // Clear InferCSP in single String format
+    document.getElementById("inferredCSP").textContent = "";
+
+    // Now display Infer CSP in array format
+    var parentElm = document.getElementById("inferredCSP");
+    var htmlStr = "";
+    htmlStr = "<table width='400' border='1' cellspacing='0' cellpadding='0'>";
+    htmlStr += "<tr><td> Directive </td><td>Policy</td></tr>";
+
+    // Default-src
+    htmlStr += "<tr><td> Default-src </td><td>";
+    if (inferCSPArray !== "") {
+        var mySplitResult = inferCSPArray[selectedDomain][0].split(" ");    
+        for(var i = 0; i < mySplitResult.length; i++){
+            if(mySplitResult[i] === "") {
+                continue;
+            } else {
+                var divId = "Default" + i;
+                htmlStr += "<div id='"+divId+"' onmouseover=\"addCloseBtn('"+divId+"')\">" + mySplitResult[i] + " </div>";
+            }
+            
+        }
+    }
+    htmlStr += "</td></tr>";
+    
+    // script-src directive
+
+    // img-src directive
+   
+    htmlStr +="</table>";
+    parentElm.innerHTML = htmlStr;
+}
+
 // display inferred CSP policy in UI
 function displayInferCSP(selectedDomain) {
+    getInferPolicyInArrayFormat(selectedDomain);
+
     if (inferCSPAll[selectedDomain]) {
         document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
     } else {
@@ -667,7 +750,7 @@ function helperToChangeTab(event, curDirID) {
 // This fun stores CSP directive data in case of tabs
 function changeDirective(event, curDirID) {
     
-    if (previousTabId == curDirID)
+    if (previousTabId === curDirID)
         return;
 
     var dynamicDirDIV = document.getElementById("dynamicDirDiv");
@@ -906,7 +989,7 @@ function applyUserRules() {
     // 2. Store current directive rules into array
     var userList = document.getElementById("rule1UserList");
     // if its empty then no need to store. 
-    if (userList.options.length!= 0) {
+    if (userList.options.length != 0) {
 	      var userListData="";
 	      for (var i=0; i < userList.options.length; i++) {
             if(userList.options[i].value)

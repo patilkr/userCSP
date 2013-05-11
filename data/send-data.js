@@ -65,3 +65,8 @@ function inferCSPRules(state) {
 function getInferCSPArray(webDomain) {
     addon.port.emit("inferCSPArray", webDomain);
 }
+
+// Function to get inferred CSP Rule in Array format from main 
+function getInferPolicyInArrayFormat(selectedDomain) {
+    addon.port.emit("inferCSPArrayFormat", selectedDomain);
+}
