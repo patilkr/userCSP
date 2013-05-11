@@ -362,51 +362,6 @@ function addCloseBtn(elemId) {
 
 }
 
-// Display infer policy in Array format
-function displayInferCSPInArray(selectedDomain) {
-    // Clear InferCSP in single String format
-    document.getElementById("inferredCSP").textContent = "";
-
-    // Now display Infer CSP in array format
-    var parentElm = document.getElementById("inferredCSP");
-    var htmlStr = "";
-    htmlStr = "<table width='400' border='1' cellspacing='0' cellpadding='0'>";
-    htmlStr += "<tr><td> Directive </td><td>Policy</td></tr>";
-
-    // Default-src
-    htmlStr += "<tr><td> Default-src </td><td>";
-    if (inferCSPArray !== "") {
-        var mySplitResult = inferCSPArray[selectedDomain][0].split(" ");    
-        for(var i = 0; i < mySplitResult.length; i++){
-            if(mySplitResult[i] === "") {
-                continue;
-            } else {
-                var divId = "Default" + i;
-                htmlStr += "<div id='"+divId+"' onmouseover=\"addCloseBtn('"+divId+"')\">" + mySplitResult[i] + " </div>";
-            }
-            
-        }
-    }
-    htmlStr += "</td></tr>";
-    
-    // script-src directive
-
-    // img-src directive
-   
-    htmlStr +="</table>";
-    parentElm.innerHTML = htmlStr;
-}
-
-// display inferred CSP policy in UI
-function displayInferCSP(selectedDomain) {
-    getInferPolicyInArrayFormat(selectedDomain);
-
-    if (inferCSPAll[selectedDomain]) {
-        document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
-    } else {
-        document.getElementById("inferredCSP").textContent = "";
-    }
-}
 
 // Get user choice for domain name from drop down box
 function getDomainChoice(evt) {
@@ -1335,7 +1290,7 @@ function applyCombinedRules() {
 function setInferCSPAsUserCSP() {
     var selectedDomain = getSelectedDomain();
 
-    if (selectedDomain != "all") {
+    if (selectedDomain !== "all") {
         getInferCSPArray(selectedDomain);
     }
 
@@ -1353,3 +1308,57 @@ function setInferCSPAsUserCSP() {
 //     }
 
 // } // end of showInferRules function
+
+
+function helperToDisplayInferCSPInArray(selectedDomain, index) {
+   var htmlStr = "<tr><td>" + cspDirList[index] + "</td><td>"; 
+   
+   if (inferCSPArray !== "") {
+        var mySplitResult = inferCSPArray[selectedDomain][index].split(" ");    
+        for(var i = 0; i < mySplitResult.length; i++) {
+            if(mySplitResult[i] === "") {
+                continue;
+            } else {
+                var divId = "" + cspDirList[index] + i;
+                htmlStr += "<div id='"+divId+"' onmouseover=\"addCloseBtn('"+divId+"')\">" + mySplitResult[i] + " </div>";
+            }
+            
+        } // end of FOR loop
+    }
+    htmlStr += "</td></tr>";
+    
+    return htmlStr;
+} // end of Function helperToDisplayInferCSPInArray()
+
+
+// Display infer policy in Array format
+function displayInferCSPInArray(selectedDomain) {
+    // Clear InferCSP in single String format
+    document.getElementById("inferredCSP").textContent = "";
+
+    // Now display Infer CSP in array format
+    var parentElm = document.getElementById("inferredCSP");
+    var htmlStr = "";
+    htmlStr = "<table width='400px' border='1' cellspacing='0' cellpadding='0'>";
+    htmlStr += "<tr><td style='width:125px'> <b>Directive</b> </td><td> <b>Policy</b> </td></tr>";
+
+    // Add all directives
+    for (var i = 0; i < 10; i++) {
+        var Result = helperToDisplayInferCSPInArray(selectedDomain, i);
+        htmlStr += Result;
+    }
+    
+    htmlStr += "</table>";
+    parentElm.innerHTML = htmlStr;
+}
+
+// display inferred CSP policy in UI
+function displayInferCSP(selectedDomain) {
+    getInferPolicyInArrayFormat(selectedDomain);
+
+    if (inferCSPAll[selectedDomain]) {
+        document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
+    } else {
+        document.getElementById("inferredCSP").textContent = "";
+    }
+}
