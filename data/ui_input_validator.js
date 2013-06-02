@@ -330,7 +330,7 @@ function removeInferredDomain(evt) {
 
 // Dynamically show close button on mouseover event
 function addCloseBtn(elemId) {
- // <span class='close-btn'> <a href="">X</a></span>
+ // <span class='close-btn'> <a href="">X</a> </span>
     
     // remove closeBtn if it exsits
     try {
@@ -348,11 +348,15 @@ function addCloseBtn(elemId) {
     newElm.setAttribute('class', 'close-btn');
     element.appendChild(newElm);
 
-    var newElm1 = document.createElement("a");
-    newElm1.setAttribute('id', 'closeBtnText');
-    newElm1.setAttribute('href', '');
-    newElm1.textContent = "X";
-    newElm.appendChild(newElm1);
+   // var newElm1 = document.createElement("i");
+   // newElm1.setAttribute('id', 'clickListener');
+   // newElm.appendChild(newElm1);
+
+    var newElm2 = document.createElement("a");
+    newElm2.setAttribute('id', 'closeBtnText');
+    newElm2.setAttribute('href', '');
+    newElm2.textContent = "X";
+    newElm.appendChild(newElm2);
 
     if(typeof document.addEventListener != 'undefined') {
         document.getElementById('closeBtn').addEventListener('click', function(e) { removeInferredDomain(e); }, false);
