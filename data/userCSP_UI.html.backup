@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>User Specified Content Security Policy</title>
+    <link href="tabs.css" rel="stylesheet" type="text/css" />
+
+<!-- Global Tables to store user CSP and website CSP -->
+<script>
+//Directive name list
+var cspDirList = ["default-src", "script-src", "object-src", "img-src", "media-src", "style-src", "frame-src", "font-src", "connect-src", "frame-ancestors", "report-uri"];
+
+
+// Two dimensional array structure for userCSPArray and websiteCSPArray
+// user/websiteCSPArray[domainName][0] = default-src 
+// user/websiteCSPArray[domainName][1] = script-src
+// user/websiteCSPArray[domainName][2] = object-src
+// user/websiteCSPArray[domainName][3] = image-src
+// user/websiteCSPArray[domainName][4] = media-src
+// user/websiteCSPArray[domainName][5] = style-src
+// user/websiteCSPArray[domainName][6] = frame-src
+// user/websiteCSPArray[domainName][7] = font-src
+// user/websiteCSPArray[domainName][8] = xhr-src / connect-src
+// user/websiteCSPArray[domainName][9] = frame-ancestors
+// user/websiteCSPArray[domainName][10] = report-uri
+// userCSPArray[][11] = website/user/combinS/combineL rules
+// userCSPArray[][12] = inline Script on/off
+// userCSPArray[][13] = combined Strict/Loose rules
+// userCSPArray[][14] = inline Eval on/off
+
+var userCSPArray= {}; // stores user defined CSP in array format
+var userCSPAll = {}; // stores user defined CSP without array format
+
+var websiteCSPArray = {}; // stores website defined CSP in array format
+var websiteCSPAll = {}; // stores website defined complete CSP as it is.  
+
+// To remember the previously selected Domain in onchange event
+var oldDomainValue = "all";
+
+// To remember the previous selected directives in onchange event
+var oldDirectiveValue = 0;
+
+var previousTabId = 0; // Stores value of previous tab id
+
+var inferCSPArray = {}; // stores infer policy for website in Array format
+var inferCSPAll = {}; // stores infer policy for website
+
+</script>
+
+ <!-- Script file to send data to main add-on -->
+ <script src="send-data.js"></script>
+
+<!-- Script file to process UI  -->
+<script src="ui_input_validator.js"></script>
+
+ <!-- Script file to receive data from main add-on -->
+ <script src="recv-data.js"></script>
+
+<!-- CSS Style Sheet to show buuble text effect -->
+ <style>
+.close-btn {
+    border: 3px solid #c2c2c2;
+    position: relative;
+    padding: 2px 5px;
+    top: -1px;
+    background-color: #605F61;
+    left: 0px;
+    border-radius: 20px;   
+}
+
+.close-btn a {
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+</style>
+
+</head>
+<body>
+<h1>CSP Policy <input type='button' style="float: right" id='exitUserCSP' value='Exit' onclick='exitCSP(event);' /></h1>
+
+<p>
+     <label>Select Domain To Apply CSP Rules </label>
+     <select id="domainName" size="1" style="width:220px" onchange="getDomainChoice(event);">
+        <option value="all">*(Every Website)</option>
+      </select>
+      <script>
+         getforAll();
+      </script>
+      <br />
+      <!-- <table border="2" cellpadding="5"> -->
+ <!--      <tr>   -->
+ <!--       <td> <label>User Rules For Selected Domain </label> </td> -->
+ <!--       <td> -->
+ <!--       <input type="radio" Name="stateGroup" id="cspRuleEnable" value="Enable"  onclick="swapCSPStateForDomain(this);"> <label for="cspRuleEnable"> Enable </label> -->
+ <!--       <input type="radio" Name="stateGroup" id="cspRuleDisable" value="Disable" onclick="swapCSPStateForDomain(this);"> <label for="cspRuleDisable"> Disable </label></td> -->
+ <!-- </tr>       -->
+       
+ <!--         </table> -->
+</p>
+
+<div class="content">
+    
+    <ol id="toc">
+    <li id="All-policies"><a  href="#" onclick="changeDirective(this, -1);">All</a></li>
+    <li id="Infer-Policy"><a  href="#" onclick="changeDirective(this, 11);">Infer-CSP</a></li>    
+    <li id="Help"><a  href="#" onclick="changeDirective(this, 12);">Help</a></li>
+    </ol>
+
+    <h2 id="directiveName">Directives</h2> 
+
+    <ol id="toc">
+    <li id="Default-Src" class="current"><a  href="#" onclick="changeDirective(this, 0);">default-src</a></li>
+    <li id="Script-Src"><a  href="#" onclick="changeDirective(this, 1);">script-src</a></li>
+    <li id="Object-Src"><a  href="#" onclick="changeDirective(this, 2);">object-src</a></li>
+    <li id="Image-Src"><a  href="#" onclick="changeDirective(this, 3);">img-src</a></li>
+    <li id="Media-Src"><a  href="#" onclick="changeDirective(this, 4);">media-src</a></li>
+    <li id="Style-Src"><a  href="#" onclick="changeDirective(this, 5);">style-src</a></li>
+    <li id="Frame-Src"><a  href="#" onclick="changeDirective(this, 6);">frame-src</a></li>
+    <li id="Font-Src"><a  href="#" onclick="changeDirective(this, 7);">font-src</a></li>
+    <li id="Connect-Src"><a  href="#" onclick="changeDirective(this, 8);">connect-src</a></li>
+    <li id="Frame-Ancestors"><a  href="#" onclick="changeDirective(this, 9);">frame-ancestors</a></li>
+    <li id="Report-uri"><a  href="#" onclick="changeDirective(this, 10);">Report-uri</a></li>
+</ol>
+
+     <!-- <select id="cspDirectives" style="width:220px" onchange="storeDirectiveData(this);"> -->
+    <!--   <option value="0">default-src</option> -->
+    <!--   <option value="1">script-src</option> -->
+    <!--   <option value="2">object-src</option> -->
+    <!--   <option value="3">img-src</option> -->
+    <!--   <option value="4">media-src</option> -->
+    <!--   <option value="5">style-src</option> -->
+    <!--   <option value="6">frame-src</option> -->
+    <!--   <option value="7">font-src</option> -->
+    <!--   <option value="8">connect-src</option> -->
+    <!--   <option value="9">frame-ancestors</option> -->
+    <!-- </select> -->
+
+    <br />
+    <br />
+     <!-- ----------------CSP Directives Tab UI ----------------------->
+    <div id="dynamicDirDiv">
+      <p><label for='rule1'>Enter Rule: </label> <input type='text' id='rule1' value='' /> &nbsp;&nbsp; <input type='button' id='addRule1btn' value='Add' onclick='listenData(event);' /> <br />
+        <label id='errorMsg' ></label>
+      </p>
+
+      <p><table width='100%' border='0' cellspacing='0' cellpadding='0'>
+          <tr> <td align='center'> 
+              <label for='rule1WebsiteList'>Website Specified Rules</label> </td>
+            <td align='center'> <label for='rule1UserList'>User Specified Rules </label> </td></tr> 
+          <tr> <td align='center'> 
+              <select multiple='multiple' id='rule1WebsiteList' style='width:220px'>
+                <!-- <option value='self'>*.example.com</option> --> 
+            </select> </td>  
+            <td align='center'> 
+              <select multiple='multiple' id='rule1UserList' style='width:220px'> </select> </td></tr> 
+          <tr>  <td align='center'> 
+              <input type='button' id='removeRule1Optionsbtn' value='Add to User Rule' onclick='addData(event);' /> </td>  
+            <td align='center'> 
+              <input type='button' id='removeRule1btn' value='Remove' onclick='removeData(event);' /> </td> </tr>
+          <tr>  <td> &nbsp;</td>  <td> &nbsp;</td>   </tr>
+      </table> </p>
+
+      <p align='right'><input type='button' id='applyRule1btn' value='Save User Rules' onclick='applyUserRules()' /></p>
+    </div>
+
+
+    <!-- ---------------- All Tab UI ------------------------------>
+    <div id="dynamicAllTabDiv" >
+      <br />
+      <input type='radio' Name='group1' id='selectWebsiteCSPRuleBtn' value='W' onclick='rulesToApply(1);' />
+      <label for='selectWebsiteCSPRuleBtn'><b>Website CSP Rules:</b> </label> <br />
+      <label id='websiteCompleteCSP' style="color:#DD4B39;"></label>  <br /><br />   
+      
+      <input type='radio' Name='group1' id='selectUserCSPRuleBtn' value='U' onclick='rulesToApply(2);' />
+      <label for='selectUserCSPRuleBtn'><b>User CSP Rules:</b> </label>    <br />
+      <label id='userCompleteCSP' style="color:#DD4B39;"></label> <br /><br />  
+
+     
+      <!-- Inline Script, Eval Options  -->
+      <!-- &nbsp;&nbsp;&nbsp;<label>Do you want to allow Inline Scripts? </label> -->
+      <!-- <input type='radio' Name='group3' id='inlineScriptRuleBtnTrue' value='Y' onclick='inlineScriptRule(1);' /> <label for='inlineScriptRuleBtnTrue'> Yes </label>  &nbsp;&nbsp;&nbsp; -->
+      <!-- <input type='radio' Name='group3' id='inlineScriptRuleBtnFalse' value='N' onclick='inlineScriptRule(0);' /> <label for='inlineScriptRuleBtnFalse'> No </label> -->
+
+      <!-- <br /> -->
+
+      <!--  Eval Options  -->
+      <!-- &nbsp;&nbsp;&nbsp;<label>Do you want to allow Inline Eval()? &nbsp; </label> -->
+      <!-- <input type='radio' Name='group4' id='inlineEvalRuleBtnTrue' value='Y' onclick='inlineEvalRule(1);' /> <label for='inlineEvalRuleBtnTrue'> Yes </label>  &nbsp;&nbsp;&nbsp; -->
+      <!-- <input type='radio' Name='group4' id='inlineEvalRuleBtnFalse' value='N' onclick='inlineEvalRule(0);' /> <label for='inlineEvalRuleBtnFalse'> No </label> <br /> <br /> -->
+
+
+      <label for='selectCombinedCSPRuleBtn'><b>Combined Rules:</b> </label>   <br />
+      <label id='combinedWUCSP' style="color:#DD4B39;"></label> <!-- Unused -->
+
+      
+      <!-- &nbsp;&nbsp;&nbsp;<input type='radio' Name='group2' id='combineStrictRule1btn' value='S' onclick='combineStrict();' />  -->
+      <input type='radio' Name='group1' id='selectCombinedSCSPRuleBtn' value='C' onclick='rulesToApply(3);' />
+      <label for='selectCombinedSCSPRuleBtn'> Combine Strict </label> <br />
+      <label id='combinedStrictCSP' style="color:#DD4B39;"> </label> <br /><br />
+      
+      <!-- &nbsp;&nbsp;&nbsp;<input type='radio' Name='group2' id='combineLooseRule1btn' value='L' onclick='combineLoose();' /> -->
+      <input type='radio' Name='group1' id='selectCombinedLCSPRuleBtn' value='C' onclick='rulesToApply(4);' />
+      <label for='selectCombinedLCSPRuleBtn'> Combine Loose </label> <br />
+      <label id='combinedLooseCSP' style="color:#DD4B39;"> </label> <br /> <br />
+    
+      <p align='right'>  
+        <input type='button' id='applyCombinedRule1btn' value='Save' onclick='applyCombinedRules();' /> </p>
+
+    </div>
+    
+    <!-- Infer Policy Tab -->
+    <div id="dynamicInferDiv">
+      
+      <br />
+       <label id='startInferBtnHelp' style="color:gray;"></label> <br />
+
+      <input type='button' id='startInferCSPbtn' value='Start CSP Infer' onclick='inferCSPRules(1);' />&nbsp;&nbsp;&nbsp;
+      <input type='button' id='stopInferCSPbtn' value='Stop CSP Infer' onclick='inferCSPRules(0);' /> <br /> <br />
+
+      <label ><b>Inferred CSP Rules:</b> </label>    <br />
+      <label id='inferredCSP' style="color:#DD4B39;"></label> <br />
+      <br />
+
+      <input type='button' id='setInferCSPAsUserCSP' value='Set As User CSP' onclick='setInferCSPAsUserCSP();' />
+    </div>
+    <!-- End of Infer Policy Tab -->
+    
+    <!-- Help Tab -->
+    <div id="dynamicHelpDiv">
+      <br /><br/>
+      <label id='userCSPHelp' style="color:#DD4B39;">If the website rules appear to be missing for a site that has implemented CSP, try clicking shift-refresh.  It may be because the website is cached.</label> <br />
+    </div>
+    <!-- End of Help Tab -->
+
+    <script>
+      var AllTabDIV = document.getElementById("dynamicAllTabDiv");
+      var dynamicInferDIV = document.getElementById("dynamicInferDiv");
+      var dynamicHelpDIV = document.getElementById("dynamicHelpDiv");
+
+      AllTabDIV.style.display ='none'; 
+      dynamicInferDIV.style.display ='none';
+      dynamicHelpDIV.style.display ='none';
+
+      // Set Error msg color to Red
+      document.getElementById("errorMsg").style.color= "red";
+
+      // Set default state  in All Tab UI
+      document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+      // document.getElementById("inlineScriptRuleBtnFalse").checked = true;
+      // document.getElementById("inlineEvalRuleBtnFalse").checked = true;
+
+      // Infer CSP policy button
+      document.getElementById("startInferCSPbtn").disabled = true;
+    </script>
+
+</div> <!-- end of DIV class content -->
+</body>
+</html>
