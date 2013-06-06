@@ -1017,47 +1017,72 @@ function restoreCSPRules() {
     switch (userCSPArray[selectedDomain][11]) {
     case 1: // Website Rules
         document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+        if (typeof(websiteCSPAll[selectedDomain]) !== 'undefined') {
+         document.getElementById("currentCSP").textContent = websiteCSPAll[selectedDomain];
+        } else {
+          document.getElementById("currentCSP").textContent = "";
+        }
         break;
     case 2: // USer Rules
         document.getElementById("selectUserCSPRuleBtn").checked = true;
+        if(typeof(userCSPAll[selectedDomain]) !== 'undefined') {
+            document.getElementById("currentCSP").textContent =  userCSPAll[selectedDomain];
+        } else {
+          document.getElementById("currentCSP").textContent = "";
+        }
         break;
     case 3: // Combine Strict Rules
         document.getElementById("selectCombinedSCSPRuleBtn").checked = true;
+        if (typeof(userCSPArray[selectedDomain][13]) !== 'undefined') {
+            document.getElementById("currentCSP").textContent = userCSPArray[selectedDomain][13];
+        } else {
+          document.getElementById("currentCSP").textContent = "";
+        }
         break;
     case 4: // Combine Loose Rules
         document.getElementById("selectCombinedLCSPRuleBtn").checked = true;
+         if (typeof(userCSPArray[selectedDomain][13]) !== 'undefined') {
+            document.getElementById("currentCSP").textContent = userCSPArray[selectedDomain][13];
+        } else {
+          document.getElementById("currentCSP").textContent = "";
+        }
         break;
     default:
         document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+        if (typeof(websiteCSPAll[selectedDomain]) !== 'undefined') {
+         document.getElementById("currentCSP").textContent = websiteCSPAll[selectedDomain];
+        } else {
+          document.getElementById("currentCSP").textContent = "";
+        }
         break;
     } // end of switch
 
-    // Restore "ALL" Tab contents
-    if (typeof(websiteCSPAll[selectedDomain]) !== 'undefined')
-        document.getElementById("websiteCompleteCSP").textContent = websiteCSPAll[selectedDomain];
-    else
-        document.getElementById("websiteCompleteCSP").textContent = "";
+    // // Restore "ALL" Tab contents
+    // if (typeof(websiteCSPAll[selectedDomain]) !== 'undefined')
+    //     document.getElementById("websiteCompleteCSP").textContent = websiteCSPAll[selectedDomain];
+    // else
+    //     document.getElementById("websiteCompleteCSP").textContent = "";
   
-    if(typeof(userCSPAll[selectedDomain]) !== 'undefined')
-        document.getElementById("userCompleteCSP").textContent =  userCSPAll[selectedDomain];
-    else
-        document.getElementById("userCompleteCSP").textContent = "";
+    // if(typeof(userCSPAll[selectedDomain]) !== 'undefined')
+    //     document.getElementById("userCompleteCSP").textContent =  userCSPAll[selectedDomain];
+    // else
+    //     document.getElementById("userCompleteCSP").textContent = "";
 
-    if (typeof(userCSPArray[selectedDomain][13]) !== 'undefined')
-        document.getElementById("combinedStrictCSP").textContent = userCSPArray[selectedDomain][13];
-    else
-        document.getElementById("combinedStrictCSP").textContent = "";
+    // if (typeof(userCSPArray[selectedDomain][13]) !== 'undefined')
+    //     document.getElementById("combinedStrictCSP").textContent = userCSPArray[selectedDomain][13];
+    // else
+    //     document.getElementById("combinedStrictCSP").textContent = "";
     
     
     // Display inferCSP policy into add-on UI    
-    displayInferCSP(selectedDomain);
+//    displayInferCSP(selectedDomain);
 
-    // // // Infer CSP rules
-    // if (inferCSPAll[selectedDomain]) {
-    //     document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
-    // } else {
-    //     document.getElementById("inferredCSP").textContent = "";
-    // }
+    // // Infer CSP rules
+    if (inferCSPAll[selectedDomain]) {
+        document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
+    } else {
+        document.getElementById("inferredCSP").textContent = "";
+    }
 
 } // end of "restoreCSPRules" function
 
@@ -1302,16 +1327,16 @@ function setInferCSPAsUserCSP() {
 
 
 
-// // Function to display inferred CSP policy
-// function showInferRules() {
-//     var selectedDomain = getSelectedDomain();
-//     if (inferCSPAll[selectedDomain]) {
-//         document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
-//     } else {
-//         document.getElementById("inferredCSP").textContent = "";
-//     }
+// Function to display inferred CSP policy
+function showInferRules() {
+    var selectedDomain = getSelectedDomain();
+    if (inferCSPAll[selectedDomain]) {
+        document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
+    } else {
+        document.getElementById("inferredCSP").textContent = "";
+    }
 
-// } // end of showInferRules function
+} // end of showInferRules function
 
 
 function helperToDisplayInferCSPInArray(selectedDomain, index) {

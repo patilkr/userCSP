@@ -49,15 +49,18 @@ addon.port.on("addHostName", function (hName) {
     selectDomainList.options.length = 0;
 
 
-     // ---//Clear UI Elements as well--------------------
-    //1. Reset All tab contents
-    document.getElementById("websiteCompleteCSP").textContent = "";
-    document.getElementById("userCompleteCSP").textContent = "";
-    document.getElementById("combinedStrictCSP").textContent = "";
-    document.getElementById("combinedLooseCSP").textContent = "";
-    document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
-    // document.getElementById("inlineScriptRuleBtnFalse").checked = true;
-    // document.getElementById("inlineEvalRuleBtnFalse").checked = true;
+    //  // ---//Clear UI Elements as well--------------------
+    // //1. Reset All tab contents
+    // document.getElementById("websiteCompleteCSP").textContent = "";
+    // document.getElementById("userCompleteCSP").textContent = "";
+    // document.getElementById("combinedStrictCSP").textContent = "";
+    // document.getElementById("combinedLooseCSP").textContent = "";
+    // document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+    // // document.getElementById("inlineScriptRuleBtnFalse").checked = true;
+    // // document.getElementById("inlineEvalRuleBtnFalse").checked = true;
+
+    document.getElementById("inferredCSP").textContent = "";
+    document.getElementById("currentCSP").textContent = "";
 
     //2. Clear Directive contents
     document.getElementById("rule1").value = "";
