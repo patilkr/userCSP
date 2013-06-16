@@ -1,42 +1,25 @@
-/* * Contributor(s):
- *   PATIL Kailas <patilkr24@gmail.com>
-*/
 
-// // Helper function to set the Name of selected domain
-function setSelectedDomain(activeDomain) {
-    var dName = document.getElementById("domainName");  
-    for(var i=0; i<dName.options.length; i++) {
-         if (activeDomain.indexOf(dName.options[i].value) != -1) {
-             //dump("\n !!! Found activeWindow Domain. Changing it");
-             dName.selectedIndex = i;
-             break;
-         }
-    } // end of FOR loop
+// set Infered CSP array of a website to userCSP Array
+addon.port.on("setInferAsUserCSP", function (webDomain, inferredCSPArray, inferredCSPPolicies) {
+    var selectedDomain = getSelectedDomain();
 
-} // end of setSelectedDomain
+    if (typeof(inferredCSPArray[webDomain]) === 'undefined') 
+        return;
 
+    if (typeof(inferredCSPPolicies[webDomain]) === 'undefined') 
+        return;
 
-// Receive the list of domain names from main add-on
-addon.port.on("domainNames", function (arg) {  
-   //addon.port.emit("text-entered", arg);
+    if (selectedDomain.match(webDomain)) {
+        inferCSPAll[selectedDomain] = inferredCSPPolicies[selectedDomain];
 
-    //dump("\n reve-data.js: domainNames invoked. DomainNames = "+arg);
-
-    // var selectDomainList = document.getElementById("domainName");
-    // var anOption = document.createElement("OPTION");
-    // anOption.text = "*(Every Website)";
-	  // anOption.value = "all";    
-	  // selectDomainList.add(anOption);
-
-    //  // We need to add this domain elements to the Domain name Drop down box
-    // if (arg.length != 0) {
-	  //     for (var i = 0; i < arg.length; i++) {
-	  //         anOption = document.createElement("OPTION");
-	  //         anOption.text = arg[i];
-	  //         anOption.value = arg[i];
-	  //         selectDomainList.add(anOption);
-	  //     }
-    // } //end of "arg.length" IF loop
+        for (var i = 0; i < 10; i++) {
+            if (inferredCSPArray[selectedDomain][i] !== null && inferredCSPArray[selectedDomain][i] !== "null") {
+                inferCSPArray[selectedDomain][i] = inferredCSPArray[selectedDomain][i];
+            } else {
+                inferCSPArray[selectedDomain][i] ="";
+            }
+        }
+    }
 });
 
 // Add hostname recevied from main-add to domain names drop down box
@@ -48,18 +31,6 @@ addon.port.on("addHostName", function (hName) {
     // Empty previous list
     selectDomainList.options.length = 0;
 
-
-    //  // ---//Clear UI Elements as well--------------------
-    // //1. Reset All tab contents
-    // document.getElementById("websiteCompleteCSP").textContent = "";
-    // document.getElementById("userCompleteCSP").textContent = "";
-    // document.getElementById("combinedStrictCSP").textContent = "";
-    // document.getElementById("combinedLooseCSP").textContent = "";
-    // document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
-    // // document.getElementById("inlineScriptRuleBtnFalse").checked = true;
-    // // document.getElementById("inlineEvalRuleBtnFalse").checked = true;
-
-    document.getElementById("inferredCSP").textContent = "";
     document.getElementById("currentCSP").textContent = "";
 
     //2. Clear Directive contents
@@ -77,7 +48,7 @@ addon.port.on("addHostName", function (hName) {
     selectDomainList.add(anOption);
 
     // Check global userCSPArray for data
-     if (!userCSPArray || userCSPArray == null) {
+     if (!userCSPArray || userCSPArray === null) {
         //dump("\n userCSPArray doesn't exists. So I need to create it ");
          userCSPArray = {};
     } 
@@ -85,19 +56,12 @@ addon.port.on("addHostName", function (hName) {
         userCSPArray[anOption.value] = new Array(15);
         
         // make bydefault state to Enable
-        userCSPArray[anOption.value][11] = 1; 
+        userCSPUIState[anOption.value] = 1; 
         document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
-
-        // // Bydefault disallow inline scripts
-        // userCSPArray[anOption.value][12] = false;
-        // // Bydefault disallow inline evals
-        // userCSPArray[anOption.value][14] = false;
-
-        //dump("\n userCSP arrary is created for domain="+anOption.value);
     }   
     
     // We need to add this domain elements to the Domain name Drop down box
-    if (hName.length != 0) {
+    if (hName.length !== 0) {
 	      for (var i = 0; i < hName.length; i++) {
 	          anOption = document.createElement("OPTION");
 	          anOption.text = hName[i];
@@ -109,68 +73,43 @@ addon.port.on("addHostName", function (hName) {
 		            userCSPArray[anOption.value] = new Array(15);
 
                 // make bydefault state to Enable
-                userCSPArray[anOption.value][11] = 1; 
+                userCSPUIState[anOption.value] = 1; 
                 document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
-
-                // // Bydefault disallow inline scripts
-                // userCSPArray[anOption.value][12] = false;
-                // // Bydefault disallow inline evals
-                // userCSPArray[anOption.value][14] = false;
-		            
-                //dump("\n userCSP arrary is created for domain="+anOption.value);
 	          }  
             
 	      } // end of FOR loop
     } //end of "hName.length" IF loop
 
-    //dump("\n New hosts added to drop down box are: "+hName);
-
 }); // end of "addHostName" event listener
 
 // Add CSP rules into global table
-addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPList, userCSPList, inferRulesList) {
-    //dump("\n UI: I have received CSP Rules for: "+dListData.length+" Domains");
-
-    // cannot use ".length" method  on websiteListData variable. 
-
-    // if (dListData.length == 0)
-	  //     return;   
-    
+addon.port.on("showCSPRules", function (activeWindow, websiteCSPList, websiteListArray, userCSPList, userCSPListArray,  inferRulesList, inferRulesListArray) {
+        
     // Check global userCSPArray for data
-    if (!userCSPArray || userCSPArray == null) {
-        //dump("\n userCSPArray doesn't exists. So I need to create it ");
+    if (!userCSPArray || userCSPArray === null) {
         userCSPArray = {};
     } 
     if (!userCSPArray["all"]) {
         userCSPArray["all"] = new Array(15);
     }
 
-    if (!websiteCSPArray || websiteCSPArray == null) {
-        //dump("\n websiteCSPArray doesn't exists. So I need to create it ");
+    if (!websiteCSPArray || websiteCSPArray === null) {
         websiteCSPArray = {};
     }
 
     var dNames = document.getElementById("domainName");
-    //dump("\n number of domains in the list are : "+dNames.options.length);
+   
+    setSelectedDomain(activeWindow);   
 
-
-    // Set Active Window as selected domain
-    //dump("\n Active Domain in the user list should be = "+dListData.activeDomain);
-       setSelectedDomain(dListData.activeDomain);   
-
-    for (var i=0; i<dNames.options.length; i++) {
-        if (websiteListData[dNames.options[i].value]) {
+    for (var i = 0; i < dNames.options.length; i++) {
+        if (websiteListArray[dNames.options[i].value]) {
             websiteCSPArray[dNames.options[i].value] = new Array(11);
-            //dump("\n@@ Website CSP Array is created for : "+dNames.options[i].value);
 
             // store website defined CSP in global table 
             websiteCSPAll[dNames.options[i].value] = websiteCSPList[dNames.options[i].value];
-
-            //dump("\n Website defined CSP = " + websiteCSPAll[dNames.options[i].value]);
-
             for (var k=0; k<11; k++) {
-                websiteCSPArray[dNames.options[i].value][k] = websiteListData[dNames.options[i].value][k];
-               // //dump("\n @@@ WebsiteCSPArray[][k] = "+websiteCSPArray[dNames.options[i].value][k]);
+                websiteCSPArray[dNames.options[i].value][k] = websiteListArray[dNames.options[i].value][k];
+              
             } // end of FOR Loop
         } // end of IF wesbiteListData Loop
 
@@ -182,13 +121,13 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
         }
        
         //  //dump("\n Restoring CSP rules of Domain:"+dNames.options[i].value);
-	      if (dListData[dNames.options[i].value]) {
-	          for (var j=0; j<15; j++) {
+	      if (userCSPListArray[dNames.options[i].value]) {
+	          for (var j = 0; j < 15; j++) {
                 // Restore userCSP array from Database
-		            if (dListData[dNames.options[i].value][j] == "null") {
+		            if (userCSPListArray[dNames.options[i].value][j] === "null") {
 		                userCSPArray[dNames.options[i].value][j] = "";
 		            } else {
-		                userCSPArray[dNames.options[i].value][j] = dListData[dNames.options[i].value][j];
+		                userCSPArray[dNames.options[i].value][j] = userCSPListArray[dNames.options[i].value][j];
                       //dump("\n Restored: "+j+" directive="+userCSPArray[dNames.options[i].value][j]);
 		            }
 	          } // end of FOR loop "j"
@@ -214,6 +153,17 @@ addon.port.on("showCSPRules", function (dListData, websiteListData, websiteCSPLi
 
 }); // end of "showCSPRules" event listener
 
+// // Helper function to set the Name of selected domain
+function setSelectedDomain(activeDomain) {
+    var dName = document.getElementById("domainName");  
+    for(var i=0; i<dName.options.length; i++) {
+         if (activeDomain.indexOf(dName.options[i].value) !== -1) {
+             dName.selectedIndex = i;
+             break;
+         }
+    } // end of FOR loop
+
+} // end of setSelectedDomain
 
 // Change Seclected Domain to domain names drop down box
 addon.port.on("changeActiveDomain", function (activeDomain) {  
@@ -228,7 +178,7 @@ addon.port.on("rmHost", function (hName) {
     var selectDomainList = document.getElementById("domainName");
     
     for(var i = selectDomainList.options.length-1; i >= 0; i--) {
-        if (hName.indexOf(selectDomainList.options[i].value) != -1) {
+        if (hName.indexOf(selectDomainList.options[i].value) !== -1) {
             selectDomainList.remove(i);
             break;
         }
@@ -241,7 +191,7 @@ addon.port.on("setCombineStrict", function (strictCSP, webDomain) {
         //  //dump("$$$ CSP after RefinePolicy="+strictCSP);
     var selectedDomain = getSelectedDomain();
    
-    if (selectedDomain.match(webDomain) && (previousTabId == -1)) {
+    if (selectedDomain.match(webDomain) && (previousTabId === -1)) {
         // Display it in UI
         document.getElementById("combinedStrictCSP").textContent = strictCSP;
         
@@ -249,53 +199,5 @@ addon.port.on("setCombineStrict", function (strictCSP, webDomain) {
         userCSPArray[selectedDomain][13] = strictCSP;
     }
     
-});
-
-
-// set Infered CSP array of a website to userCSP Array
-addon.port.on("setInferAsUserCSP", function (webDomain, inferredCSPArray) {
-    var selectedDomain = getSelectedDomain();
-
-    if (typeof(inferredCSPArray[webDomain]) === 'undefined') 
-        return;
-
-    if (selectedDomain.match(webDomain)) {
-        for (var i = 0; i < 10; i++) {
-            if (inferredCSPArray[selectedDomain][i] != null && inferredCSPArray[selectedDomain][i] != "null") {
-                userCSPArray[selectedDomain][i] = inferredCSPArray[selectedDomain][i];
-            } else {
-                userCSPArray[selectedDomain][i] ="";
-            }
-        }
-    }
-});
-
-// set Infered CSP array of a website to userCSP Array
-addon.port.on("setInferCSPArray", function (webDomain, cspArray) {
-    var selectedDomain = getSelectedDomain();
-
-    if (typeof(cspArray[webDomain]) === 'undefined') 
-        return;
-
-    if (selectedDomain.match(webDomain)) {
-        if (!inferCSPArray || inferCSPArray == null) {
-            inferCSPArray = {};
-        }
-        if (!inferCSPArray[webDomain]) {
-            inferCSPArray[webDomain] = new Array(10);
-        }
-        for (var i = 0; i < 10; i++) {
-            if (typeof(cspArray[webDomain][i]) === 'undefined') {
-                inferCSPArray[selectedDomain][i] = "";
-            } else if (cspArray[selectedDomain][i] != null && cspArray[selectedDomain][i] != "null") {
-                inferCSPArray[selectedDomain][i] = cspArray[selectedDomain][i];
-               // dump("\n inferCSPArray[]="+inferCSPArray[selectedDomain][i]);
-            } else {
-                inferCSPArray[selectedDomain][i] = "";
-            }
-        }
-        // Display CSP in array format
-        displayInferCSPInArray(selectedDomain);
-    }
 });
 
