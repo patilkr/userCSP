@@ -13,6 +13,142 @@ function getSelectedDomain() {
 
 
 
+
+// Helper function to add an item into list 
+function insertItemInList(str) {
+    var anOption = document.createElement("OPTION");
+    var selectList = document.getElementById("rule1UserList");
+    anOption.text = str;
+    anOption.value = str;
+    selectList.add(anOption);
+}
+
+// Listen for user input values 
+function listenData(evt) {  
+    // Dynamically add OPTION element to SELECT Tag
+    var text = document.getElementById("rule1").value;
+    
+    // Clear Previous Error msg if any
+    document.getElementById("errorMsg").textContent = "";
+
+    if (text) {
+        //--------------------------------------------------
+        // Filtering of input according to W3C CSP standard
+        var flag = true;
+        if (text === "'none'") {            
+            insertItemInList(text);
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+        if (text === "none") {
+            insertItemInList("'none'");
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+        if (text === "*") {
+            insertItemInList(text);
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+        if (text === "'self'") {//ok
+            insertItemInList(text);
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+        if (text === "self") {
+            insertItemInList("'self'");
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+        // For "script-src" or "style-src" only 'unsafe-inline' accepted
+        if (text === "'unsafe-inline'" && (previousTabId === 1 || previousTabId === 5) ) {  
+            insertItemInList("'unsafe-inline'");
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+         if (text === "unsafe-inline" && (previousTabId === 1 || previousTabId === 5) ) {  
+            insertItemInList("'unsafe-inline'");
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+        // 'unsafe-eval' i/p accepted only for "script-src" or "style-src" 
+        if (text === "'unsafe-eval'" && (previousTabId === 1 || previousTabId === 5) ) {  
+            insertItemInList("'unsafe-eval'");
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+         if (text === "unsafe-eval" && (previousTabId === 1 || previousTabId === 5) ) {  
+            insertItemInList("'unsafe-eval'");
+            document.getElementById("rule1").value = ""; 
+            return;
+        }
+
+        var myRegexp = new RegExp('^[a-z0-9 _.:/*\']*$', 'i');
+        // any number of a-z 0-9 spaces underscore . : * \ 
+        // is allowed in I/P string. 'i' is used to ignore case. 
+        // ^ means beginning of string and $ means end of string
+        // * means any number of characters in string
+        
+        var tokens = text.split(' ');
+        for (var i in tokens) {
+            if (tokens[i] === "" || tokens[i] === " ") continue;
+            if (tokens[i] === "'none'" || tokens[i] === "none") {
+                insertItemInList(tokens[i]);
+                continue;
+            }
+            if (tokens[i] === "*") {
+                insertItemInList(text);
+                document.getElementById("rule1").value = ""; 
+                continue;
+            }
+            if (tokens[i] === "'self'" || tokens[i] === "self") {
+                insertItemInList(tokens[i]);
+                continue;
+            }  
+            if ((previousTabId === 1 || previousTabId === 5) && (tokens[i] === "'unsafe-eval'" || tokens[i] === "unsafe-eval")) {               
+                    insertItemInList(tokens[i]);
+                    continue;               
+            }
+            if ((previousTabId === 1 || previousTabId === 5) && (tokens[i] === "'unsafe-inline'" || tokens[i] === "unsafe-inline")) {               
+                    insertItemInList(tokens[i]);
+                    continue;               
+            }
+
+            if (text.match(myRegexp)) {       
+                var wildcardIndex = tokens[i].indexOf('*');
+                if (wildcardIndex != -1) { //hostname wildcard check
+                    if (wildcardIndex != 0) {
+                        if (tokens[i][wildcardIndex-1] != ':') {
+                            document.getElementById("errorMsg").textContent = " Invalid Input:" + tokens[i];
+                           // window.alert("Unexpected value:"+tokens[i]);
+                            continue;
+                        }
+                    }
+                }
+                var colonIndex = tokens[i].indexOf(':');
+                var dotIndex = tokens[i].indexOf('.');
+                if ((colonIndex != -1) && (dotIndex < colonIndex)) {
+                    insertItemInList(tokens[i]);
+                    continue;
+                }
+                if (tokens[i].indexOf('.') != -1) {
+                    insertItemInList(tokens[i]);
+                } else {
+                    document.getElementById("errorMsg").textContent = " Invalid Input:" + tokens[i];
+                }
+            } // end of .match IF loop                   
+         else document.getElementById("errorMsg").textContent = " Invalid Input:" + tokens[i];
+        } // end of FOR loop
+        //-----------------------------------------------------
+       
+        // Clear the text from Input field
+        document.getElementById("rule1").value = "";   
+         
+        // Invoke Refine policy UI
+       // showHideCombine(true);
+    }
+} // end of "listenData" function
+
 // Get user choice for domain name from drop down box
 function getDomainChoice(evt) {
     var selectedDomain = getSelectedDomain();
