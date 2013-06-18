@@ -11,8 +11,57 @@ function getSelectedDomain() {
     return selectedDomain;
 } // end of "getSelectedDomain" function
 
+// Helper function to get the name of the selected domain in drop-down list
+function getSelectedDirective() {
+    var dName = document.getElementById("cspDirectives");
+    var selectedDirective = dName.options[dName.selectedIndex].value;
+
+    return selectedDirective;
+} // end of "getSelectedDomain" function
 
 
+
+// Remove selected rule/rules from Directive
+function removeData(evt) {
+    var flag = false;
+    var selectList = document.getElementById("rule1UserList");
+    for (var i = (selectList.options.length - 1); i >= 0; i--) {
+        if(selectList.options[i].selected) {
+            selectList.remove(i);
+            flag = true;
+        }
+    }
+    // If some items are deleted to store only then update csp array
+    if (flag) {
+        var userList = document.getElementById("rule1UserList");
+        var userListData = "";
+        for (var i = 0; i < userList.options.length; i++) {
+            if(userList.options[i].value)
+                userListData += userList.options[i].value + " ";
+        }
+        var selectedDomain = getSelectedDomain();
+        if (userCSPArray[selectedDomain]) {
+            var selectedDirectiveValue = getSelectedDirective();
+            userCSPArray[selectedDomain][selectedDirectiveValue] = userListData;
+        }
+
+    } // end of IF(flag) loop
+
+} // end of "removeData" function
+
+// Add selected rule from Options list to Directive Rule list
+function addData(evt) {
+    var selectOptionsList = document.getElementById("rule1WebsiteList");
+    for (var i = (selectOptionsList.options.length - 1); i >= 0; i--) {
+        if (selectOptionsList.options[i].selected) {
+            var anOption = document.createElement("OPTION");
+            var selectList = document.getElementById("rule1UserList");
+            anOption.text = selectOptionsList.options[i].text;
+            anOption.value = selectOptionsList.options[i].value;
+            selectList.add(anOption);
+        }
+    }
+} // end of "addData" function
 
 // Helper function to add an item into list 
 function insertItemInList(str) {
