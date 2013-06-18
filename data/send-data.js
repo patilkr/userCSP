@@ -17,3 +17,8 @@ function reportIssue(e) {
 function getInferCSPArray(webDomain) {
     addon.port.emit("inferCSPArray", webDomain);
 }
+
+// Combine Strict feature
+function getCombineStrict(sitePolicy, userPolicy, webDomain) {
+    addon.port.emit("combineStrictPolicy", sitePolicy, userPolicy, webDomain);
+}
