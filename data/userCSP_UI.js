@@ -367,6 +367,8 @@ function rulesToApply(id) {
             break;
         case 4:
             document.getElementById("currentCSP").textContent = combineLoose();
+            // Send it to main add-on
+            storeUserCSPUState(selectedDomain, userCSPUIState, userCSPAll, userCSPArray);
             break;
         case 5:
             try {
