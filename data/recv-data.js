@@ -176,7 +176,7 @@ addon.port.on("showCSPRules", function (activeWindow, websiteCSPList, websiteLis
 // // Helper function to set the Name of selected domain
 function setSelectedDomain(activeDomain) {
     var dName = document.getElementById("domainName");  
-    for(var i=0; i<dName.options.length; i++) {
+    for(var i = 0; i < dName.options.length; i++) {
          if (activeDomain.indexOf(dName.options[i].value) !== -1) {
              dName.selectedIndex = i;
              break;
@@ -189,6 +189,8 @@ function setSelectedDomain(activeDomain) {
 addon.port.on("changeActiveDomain", function (activeDomain) {  
     try {
         setSelectedDomain(activeDomain);
+        // Invoke domain change function to redisplay policy values
+        getDomainChoice(null);
     } catch (e) { dump("\n @@WARNING!! default.js is not yet initialized. So setSlectedDomain Doesn't exists");}
 });
 
