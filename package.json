@@ -1,9 +1,9 @@
 {
-    "name": "newusercspdesign", 
+    "name": "usercsp", 
     "license": "MPL 2.0", 
     "author": "Kailas PATIL", 
     "version": "0.2.5", 
-    "fullName": "newUserCSPDesign", 
+    "fullName": "UserCSP", 
     "id": "jid1-BYtv5zBMLU7wZw", 
     "description": "A UserCSP add-on"
 }
