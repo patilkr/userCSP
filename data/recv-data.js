@@ -23,7 +23,7 @@ addon.port.on("setInferAsUserCSP", function (webDomain, inferredCSPArray, inferr
 });
 
 // Add hostname recevied from main-add to domain names drop down box
-addon.port.on("addHostName", function (hName) {  
+addon.port.on("addHostName", function (hName, oldUIState) {  
     var selectDomainList = document.getElementById("domainName");
 
     //dump("hName = "+ hName);
@@ -44,46 +44,64 @@ addon.port.on("addHostName", function (hName) {
 
     var anOption = document.createElement("OPTION");
     anOption.text = "*(Every Website)";
-    anOption.value = "all";    
+    anOption.value = "all";
     selectDomainList.add(anOption);
 
     // Check global userCSPArray for data
-     if (!userCSPArray || userCSPArray === null) {
+    if (!userCSPArray || userCSPArray === null) {
         //dump("\n userCSPArray doesn't exists. So I need to create it ");
-         userCSPArray = {};
-    } 
+        userCSPArray = {};
+    }
     if (!userCSPArray[anOption.value]) {
         userCSPArray[anOption.value] = new Array(15);
-        
-        // make bydefault state to Enable
-        userCSPUIState[anOption.value] = 1; 
-        document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
-    }   
+
+        // Set OLD UI State
+        if (typeof(oldUIState) !== "undefined") {
+            if (typeof(oldUIState[anOption.value] !== "undefined") || oldUIState[anOption.value] !== null) {
+                userCSPUIState[anOption.value] = oldUIState[anOption.value];
+            } else {
+                userCSPUIState[anOption.value] = 1; // Defulat website Radio btn is selcted
+            }
+        } else {
+                userCSPUIState[anOption.value] = 1; // Defulat website Radio btn is selcted
+        }
     
+       // document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+    }
+
     // We need to add this domain elements to the Domain name Drop down box
     if (hName.length !== 0) {
-	      for (var i = 0; i < hName.length; i++) {
-	          anOption = document.createElement("OPTION");
-	          anOption.text = hName[i];
-	          anOption.value = hName[i];
-	          selectDomainList.add(anOption);
-            
-            // Add an entry into global userCSPArray if it doesn't exists
-	          if (!userCSPArray[anOption.value]) {
-		            userCSPArray[anOption.value] = new Array(15);
+        for (var i = 0; i < hName.length; i++) {
+            anOption = document.createElement("OPTION");
+            anOption.text = hName[i];
+            anOption.value = hName[i];
+            selectDomainList.add(anOption);
 
-                // make bydefault state to Enable
-                userCSPUIState[anOption.value] = 1; 
-                document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
-	          }  
-            
-	      } // end of FOR loop
+            // Add an entry into global userCSPArray if it doesn't exists
+            if (!userCSPArray[anOption.value]) {
+                userCSPArray[anOption.value] = new Array(15);
+
+                // Set OLD UI State
+                if (typeof(oldUIState) !== "undefined") {
+                    if (typeof(oldUIState[anOption.value] !== "undefined") || oldUIState[anOption.value] !== null) {
+                        userCSPUIState[anOption.value] = oldUIState[anOption.value];
+                    } else {
+                        userCSPUIState[anOption.value] = 1; // Defulat website Radio btn is selcted
+                    }
+                } else {
+                    userCSPUIState[anOption.value] = 1; // Defulat website Radio btn is selcted
+                }
+                
+                // document.getElementById("selectWebsiteCSPRuleBtn").checked = true;
+            }
+
+        } // end of FOR loop
     } //end of "hName.length" IF loop
 
 }); // end of "addHostName" event listener
 
 // Add CSP rules into global table
-addon.port.on("showCSPRules", function (activeWindow, websiteCSPList, websiteListArray, userCSPList, userCSPListArray,  inferRulesList, inferRulesListArray) {
+addon.port.on("showCSPRules", function (activeWindow, websiteCSPList, websiteListArray, oldUIState, userCSPList, userCSPListArray,  inferRulesList, inferRulesListArray) {
         
     // Check global userCSPArray for data
     if (!userCSPArray || (userCSPArray === null) || typeof(userCSPArray) === "undefined") {
@@ -100,6 +118,10 @@ addon.port.on("showCSPRules", function (activeWindow, websiteCSPList, websiteLis
         websiteCSPArray = {};
     }
 
+    if (!userCSPUIState || (userCSPUIState === null) || typeof(userCSPUIState) === "undefined") {
+        userCSPUIState = {};
+    }
+    
     var dNames = document.getElementById("domainName");
    
     setSelectedDomain(activeWindow);   
@@ -118,6 +140,18 @@ addon.port.on("showCSPRules", function (activeWindow, websiteCSPList, websiteLis
             } // end of FOR Loop
         } // end of IF wesbiteListData Loop
 
+        // Record oldUIState into userCSPUIState
+        try {
+            if (typeof(oldUIState) !== "undefined") {
+                if (typeof(oldUIState[dNames.options[i].value]) !== "undefined") {
+                    userCSPUIState[dNames.options[i].value] = oldUIState[dNames.options[i].value];
+                } else {
+                    userCSPUIState[dNames.options[i].value] = 1; // Website CSP Policy by-defaul
+                }
+            }
+        } catch (e) {
+            dump("\n\n Unsuccesful to record UI state\n");
+        }
         // Record userCSP in Database
         try {
             if (typeof(userCSPList) !== "undefined") {
@@ -182,7 +216,6 @@ function setSelectedDomain(activeDomain) {
              break;
          }
     } // end of FOR loop
-
 } // end of setSelectedDomain
 
 // Change Seclected Domain to domain names drop down box
@@ -191,7 +224,7 @@ addon.port.on("changeActiveDomain", function (activeDomain) {
         setSelectedDomain(activeDomain);
         // Invoke domain change function to redisplay policy values
         getDomainChoice(null);
-    } catch (e) { dump("\n @@WARNING!! default.js is not yet initialized. So setSlectedDomain Doesn't exists");}
+    } catch (e) { dump("\n @@WARNING!! userCSP_UI.js is not yet initialized. So setSlectedDomain Doesn't exists");}
 });
 
 // Remove hostname recevied from main-add to domain names drop down box

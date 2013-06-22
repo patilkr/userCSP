@@ -96,7 +96,7 @@ function insertItemInList(str) {
         document.getElementById("currentCSP").textContent = userCSPAll[selectedDomain];
     }
     
-   storeUserCSPUState(selectedDomain, userCSPUIState, userCSPAll, userCSPArray);
+   storeUserCSPUState(selectedDomain, userCSPUIState, true, userCSPAll, userCSPArray);
     
 } // end of InsertIteminList() function
 
@@ -351,6 +351,7 @@ function rulesToApply(id) {
             try {
                 if (typeof(websiteCSPAll[selectedDomain]) !== "undefined")
                     document.getElementById("currentCSP").textContent = websiteCSPAll[selectedDomain];
+                    storeUserCSPUState(selectedDomain, userCSPUIState, false, userCSPAll, userCSPArray);
             } catch (e) {
             }
             break;
@@ -358,6 +359,7 @@ function rulesToApply(id) {
             try {
                 if (typeof(userCSPAll[selectedDomain]) !== "undefined") {
                     document.getElementById("currentCSP").textContent = userCSPAll[selectedDomain];
+                    storeUserCSPUState(selectedDomain, userCSPUIState, true, userCSPAll, userCSPArray);
                 }
             } catch (e) {
             }
@@ -368,7 +370,7 @@ function rulesToApply(id) {
         case 4:
             document.getElementById("currentCSP").textContent = combineLoose();
             // Send it to main add-on
-            storeUserCSPUState(selectedDomain, userCSPUIState, userCSPAll, userCSPArray);
+            storeUserCSPUState(selectedDomain, userCSPUIState, true, userCSPAll, userCSPArray);
             break;
         case 5:
             try {
@@ -385,6 +387,7 @@ function rulesToApply(id) {
                     getInferCSPArray(selectedDomain);
                 }
                 document.getElementById("currentCSP").textContent = inferCSPAll[selectedDomain];
+                storeUserCSPUState(selectedDomain, userCSPUIState, false, userCSPAll, userCSPArray);
             } catch (e) {
                 dump("\n rulesToApply- Error =" + e);
             }
@@ -392,7 +395,7 @@ function rulesToApply(id) {
     } // end of switch () statement    
 
 // Send it to main add-on
-// storeUserCSPUState(selectedDomain, userCSPUIState, userCSPAll, userCSPArray);
+// storeUserCSPUState(selectedDomain, userCSPUIState, true, userCSPAll, userCSPArray);
 
 } // end of function rulesToApply()
 
@@ -541,9 +544,9 @@ function restoreCSPRules() {
         case 5:
             document.getElementById("selectInferredCSPRuleBtn").checked = true;
             if (typeof(inferCSPAll[selectedDomain]) !== 'undefined') {
-                document.getElementById("inferredCSP").textContent = inferCSPAll[selectedDomain];
+                document.getElementById("currentCSP").textContent = inferCSPAll[selectedDomain];
             } else {
-                document.getElementById("inferredCSP").textContent = "";
+                document.getElementById("currentCSP").textContent = "";
             }
             break;
         default:

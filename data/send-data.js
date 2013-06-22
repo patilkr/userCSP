@@ -23,6 +23,6 @@ function getCombineStrict(sitePolicy, userPolicy, webDomain) {
     addon.port.emit("combineStrictPolicy", sitePolicy, userPolicy, webDomain);
 }
 
-function storeUserCSPUState(selectedDomain, userCSPUIState, userCSPAll, userCSPArray) {
-    addon.port.emit("storeUserCSPUIState", selectedDomain, userCSPUIState, userCSPAll, userCSPArray);
+function storeUserCSPUState(selectedDomain, userCSPUIState, flag, userCSPAll, userCSPArray) {
+    addon.port.emit("storeUserCSPUIState", selectedDomain, userCSPUIState, flag, userCSPAll, userCSPArray);
 }
