@@ -86,14 +86,17 @@ addon.port.on("addHostName", function (hName) {
 addon.port.on("showCSPRules", function (activeWindow, websiteCSPList, websiteListArray, userCSPList, userCSPListArray,  inferRulesList, inferRulesListArray) {
         
     // Check global userCSPArray for data
-    if (!userCSPArray || userCSPArray === null) {
+    if (!userCSPArray || (userCSPArray === null) || typeof(userCSPArray) === "undefined") {
         userCSPArray = {};
+    } 
+    if (!userCSPAll || (userCSPAll === null) || typeof(userSPAll) === "undefined") {
+        userCSPAll = {};
     } 
     if (!userCSPArray["all"]) {
         userCSPArray["all"] = new Array(15);
     }
 
-    if (!websiteCSPArray || websiteCSPArray === null) {
+    if (!websiteCSPArray || (websiteCSPArray === null) || typeof(websiteCSPArray) === "undefined") {
         websiteCSPArray = {};
     }
 
@@ -102,40 +105,53 @@ addon.port.on("showCSPRules", function (activeWindow, websiteCSPList, websiteLis
     setSelectedDomain(activeWindow);   
 
     for (var i = 0; i < dNames.options.length; i++) {
-        if (websiteListArray[dNames.options[i].value]) {
+        dump("\n\n Processing Domain Name = " + dNames.options[i].value);
+        
+        if (typeof(websiteListArray[dNames.options[i].value]) !== "undefined") {
             websiteCSPArray[dNames.options[i].value] = new Array(11);
 
             // store website defined CSP in global table 
             websiteCSPAll[dNames.options[i].value] = websiteCSPList[dNames.options[i].value];
+            dump("\n WebsiteCSPALL = " + websiteCSPAll[dNames.options[i].value]);
             for (var k = 0; k < 11; k++) {
                 websiteCSPArray[dNames.options[i].value][k] = websiteListArray[dNames.options[i].value][k];              
             } // end of FOR Loop
         } // end of IF wesbiteListData Loop
 
         // Record userCSP in Database
-        if (userCSPList[dNames.options[i].value]) {
-            userCSPAll[dNames.options[i].value] = userCSPList[dNames.options[i].value][0];
+        try {
+            if (typeof(userCSPList) !== "undefined") {
+                if (typeof(userCSPList[dNames.options[i].value]) !== "undefined") {
+                    userCSPAll[dNames.options[i].value] = userCSPList[dNames.options[i].value];
+                   // dump("\n\n Recevied userCSPAll = " + userCSPAll[dNames.options[i].value]);
+                } else {
+                   // dump("\n (1) Recevied userCSPAll is EMPTY!!!");
+                }
+            } else {
+              // dump("\n (2) Recvied userCSPAll is EMPTY!!!");
+            }
+
+            //  //dump("\n Restoring CSP rules of Domain:"+dNames.options[i].value);
+            if (userCSPListArray[dNames.options[i].value]) {
+                for (var j = 0; j < 15; j++) {
+                    // Restore userCSP array from Database
+                    if ((userCSPListArray[dNames.options[i].value][j] === "null") || (typeof(userCSPListArray[dNames.options[i].value][j]) === "undefined")) {
+                        userCSPArray[dNames.options[i].value][j] = "";
+                    } else {
+                        userCSPArray[dNames.options[i].value][j] = userCSPListArray[dNames.options[i].value][j];
+                    }
+                } // end of FOR loop "j"
+
+            } // endof IF dListData Loop
+        } catch (e) {
+            dump("\n\n\n\n Error in userCSP rule restoring in 'showCSPRules' event\n");        
         }
-       
-        //  //dump("\n Restoring CSP rules of Domain:"+dNames.options[i].value);
-	      if (userCSPListArray[dNames.options[i].value]) {
-	          for (var j = 0; j < 15; j++) {
-                // Restore userCSP array from Database
-		            if (userCSPListArray[dNames.options[i].value][j] === "null") {
-		                userCSPArray[dNames.options[i].value][j] = "";
-		            } else {
-		                userCSPArray[dNames.options[i].value][j] = userCSPListArray[dNames.options[i].value][j];
-		            }
-	          } // end of FOR loop "j"
-
-	      } // endof IF dListData Loop
-
 
         // Infer CSP rules
         try {
             if (typeof(inferRulesList) !== 'undefined') {
                 if (typeof(inferRulesList[dNames.options[i].value]) !== 'undefined')
-                    inferCSPAll[dNames.options[i].value] = inferRulesList[dNames.options[i].value];                
+                    inferCSPAll[dNames.options[i].value] = inferRulesList[dNames.options[i].value];                     
             }
             if (inferRulesListArray[dNames.options[i].value]) {
                 inferCSPArray[dNames.options[i].value] = new Array(11);

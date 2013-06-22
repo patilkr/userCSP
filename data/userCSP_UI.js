@@ -70,7 +70,35 @@ function insertItemInList(str) {
     anOption.text = str;
     anOption.value = str;
     selectList.add(anOption);
-}
+    
+    // Add to userCSP array as well
+    var selectedDomain = getSelectedDomain();
+    var selectedDirective = getSelectedDirective();
+    if (typeof(userCSPArray) === "undefined") {
+        userCSPArray = {};
+    }
+    if ((typeof(userCSPArray[selectedDomain]) === "undefined") || !userCSPArray[selectedDomain]) {
+        userCSPArray[selectedDomain] = new Array(15);
+        userCSPArray[selectedDomain][selectedDirective] = "";
+        console.log("\n\n\n Goes inside then why exception on next line???");
+    }
+    
+    str = str + " ";
+    if (typeof(userCSPArray[selectedDomain][selectedDirective]) !== "undefined") {            
+            userCSPArray[selectedDomain][selectedDirective] += str;
+    } else {
+        userCSPArray[selectedDomain][selectedDirective] = str;
+    }
+    
+    // Update userCSPAll
+    userCSPAll[selectedDomain] = addDirNameToPrint(userCSPArray, selectedDomain);
+    if (userCSPUIState[selectedDomain] === 2) {
+        document.getElementById("currentCSP").textContent = userCSPAll[selectedDomain];
+    }
+    
+   storeUserCSPUState(selectedDomain, userCSPUIState, userCSPAll, userCSPArray);
+    
+} // end of InsertIteminList() function
 
 // Listen for user input values 
 function listenData(evt) {  
@@ -312,12 +340,12 @@ function rulesToApply(id) {
     try {
         if (!userCSPUIState[selectedDomain]) {
             userCSPUIState[selectedDomain] = id;
-        }
-
+        }        
     } catch (e) {
         dump("\n rulesToApply- Error =" + e);
     }
-
+    userCSPUIState[selectedDomain] = id;
+    
     switch (id) {
         case 1:
             try {
@@ -360,6 +388,9 @@ function rulesToApply(id) {
             }
             break;
     } // end of switch () statement    
+
+// Send it to main add-on
+// storeUserCSPUState(selectedDomain, userCSPUIState, userCSPAll, userCSPArray);
 
 } // end of function rulesToApply()
 
@@ -657,6 +688,7 @@ function combineLoose() {
 
     // Store combined loose policy in userCSPArray
     userCSPArray[selectedDomain][13] = Result;
+    
     return Result;
 } // end of combineLoose() function
 
@@ -689,10 +721,52 @@ function combineStrict() {
     Result = addDirNameToPrint(userCSPArray, selectedDomain);
     userCSPAll[selectedDomain] = Result;
 
-    dump("\n Complete UserCSP = " + userCSPAll[selectedDomain]);
-    dump("\n Complete WebsiteCSP = " + websiteCSPAll[selectedDomain]);
+  //  dump("\n Complete UserCSP = " + userCSPAll[selectedDomain]);
+  //  dump("\n Complete WebsiteCSP = " + websiteCSPAll[selectedDomain]);
 
     // dump("\n Now combining them strictly\n");
     getCombineStrict(websiteCSPAll[selectedDomain], userCSPAll[selectedDomain], selectedDomain);
 
 } // end of combineStrict() function
+
+
+// This function automatically stores CSP directive data
+function storeDirectiveData(event) {
+    var index = event.selectedIndex;
+    dump("\n Old Directive Value=" + oldDirectiveValue + " New Directive Value=" + event.options[index].value);
+
+    // Store user CSP policy for the directive into global table in the corresponding domain name field
+    // 1. get the currently selected Domain Name
+    var selectedDomain = getSelectedDomain();
+    helperToStore(selectedDomain);
+
+    // Clear the "rule1UserList"
+    var userList = document.getElementById("rule1UserList");
+    userList.options.length = 0;
+
+    // Clear the "rule1WebsiteList"
+    var websiteList = document.getElementById("rule1WebsiteList");
+    websiteList.options.length = 0;
+
+    // change oldDirective value
+    oldDirectiveValue = event.options[index].value;
+
+    // Get new Directive contents for "rule1UserList" if its present.
+    // 1. get the currently selected Domain Name
+    selectedDomain = getSelectedDomain();
+    if (userCSPArray[selectedDomain][oldDirectiveValue]) {
+        // 2. Dynamically create OPTIONS in "rule1UserList"
+        restoreDirectiveRules(userCSPArray[selectedDomain][oldDirectiveValue]);
+    }
+
+    //---------------------------------------------------------------
+    // Show website CSP rules for selected directive
+    if (inferCSPArray || inferCSPArray !== null) {
+        if (inferCSPArray[selectedDomain]) {
+            if (inferCSPArray[selectedDomain][oldDirectiveValue]) {
+                showWebsiteCSPRules(inferCSPArray[selectedDomain][oldDirectiveValue]);
+            }
+        }
+    }
+
+} //end of "storeDirectiveData" function
