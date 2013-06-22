@@ -202,6 +202,10 @@ addon.port.on("rmHost", function (hName) {
     for(var i = selectDomainList.options.length-1; i >= 0; i--) {
         if (hName.indexOf(selectDomainList.options[i].value) !== -1) {
             selectDomainList.remove(i);
+            
+            // To handle the case of ActiveDomain removed: 
+            //  Invoke domain change function to redisplay policy values
+            getDomainChoice(null);
             break;
         }
     }
