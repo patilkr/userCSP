@@ -1,8 +1,24 @@
+<!DOCTYPE HTML>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link href="tabs.css" rel="stylesheet" type="text/css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="tabs.css" rel="stylesheet" type="text/css">
     <title>User Specified Content Security Policy</title>
+    
+    <style>
+        table 
+        {
+            width:100%;
+            border: 0;
+            
+        }
+        td
+        {
+            text-align:left;
+            border: 0;
+        }
+    </style>
+    
     <script>
       //Directive name list
       var cspDirList = ["default-src", "script-src", "object-src", "img-src", "media-src", "style-src", "frame-src", "font-src", "connect-src", "frame-ancestors", "report-uri"];
@@ -47,39 +63,37 @@
     </h1>
 
     <div class="content">
-       <p>
+       
             <label> Domain: </label>
             <select id="domainName" size="1" style="width:220px" onchange="getDomainChoice(event);">
                 <option value="all">*(Every Website)</option>
-            </select>
-            <script>
-            //  getforAll();
-            </script>
-            <hr />           
+            </select>            
+            <hr />    
         
-      <table width='100%' border='0' cellspacing='0' cellpadding='0' style="background-color:lightgray;">
+      <table style="background-color:lightgray;">
       <tr> <td>
-      <label for='showCurrentCSPRuleBtn'><b>Current Rules</b> </label>   <br />
+      <label><b>Current Rules</b></label>   <br />
       Based on:<input type='radio' Name='group1' id='selectWebsiteCSPRuleBtn' value='W' onclick='rulesToApply(1);' />
       <label for='selectWebsiteCSPRuleBtn'>Website's policy </label>  &nbsp;
 
       <input type='radio' Name='group1' id='selectUserCSPRuleBtn' value='U' onclick='rulesToApply(2);' />
       <label for='selectUserCSPRuleBtn'>User policy </label>  &nbsp;
 
-      <input type='radio' Name='group1' id='selectCombinedSCSPRuleBtn' value='C' onclick='rulesToApply(3);' />
+      <input type='radio' Name='group1' id='selectCombinedSCSPRuleBtn' value='S' onclick='rulesToApply(3);' />
       <label for='selectCombinedSCSPRuleBtn'> Intersection (more secure) </label> &nbsp;
 
-      <input type='radio' Name='group1' id='selectCombinedLCSPRuleBtn' value='C' onclick='rulesToApply(4);' />
+      <input type='radio' Name='group1' id='selectCombinedLCSPRuleBtn' value='L' onclick='rulesToApply(4);' />
       <label for='selectCombinedLCSPRuleBtn'> Combined (loose) </label> 
       
-      <input type='radio' Name='group1' id='selectInferredCSPRuleBtn' value='C' onclick='rulesToApply(5);' />
+      <input type='radio' Name='group1' id='selectInferredCSPRuleBtn' value='I' onclick='rulesToApply(5);' />
       <label for='selectInferredCSPRuleBtn'> Auto inferred policy </label> 
 
       <br /><br />
       <label id='currentCSP' style="color:#DD4B39;"></label> <br />
 
       <br />
-      </td></tr></table>
+      </td></tr>
+      </table>
 
       <hr>
 
@@ -100,22 +114,23 @@
       </h2>
 
 
-      <br /><table width='100%' border='0' cellspacing='0' cellpadding='0'>
-          <tr> <td align='left'> 
+      <br />
+      <table >
+          <tr> <td> 
               <label for='rule1WebsiteList'>Website-Inferred Rules</label> </td>
-            <td align='left'> 
+            <td> 
 
               <label for='rule1'>User Rules </label>  <br />
               <input type='text' id='rule1' value='' style='width:300px' /> &nbsp;&nbsp; 
               <input type='button' id='addRule1btn' value='Add' onclick='listenData(event);' /> </td></tr> 
-          <tr> <td align='left'> 
+          <tr> <td > 
               <select multiple='multiple' id='rule1WebsiteList' style='width:300px'>
             </select> </td>  
-            <td align='left'> 
+            <td > 
               <select multiple='multiple' id='rule1UserList' style='width:300px'> </select> </td></tr> 
-          <tr>  <td align='left'> 
+          <tr>  <td > 
               <input type='button' id='removeRule1Optionsbtn' value='Add to user rules' onclick='addData(event);' /> </td>  
-            <td align='left'> 
+            <td > 
               <input type='button' id='removeRule1btn' value='Remove' onclick='removeData(event);' /> </td> </tr>
           <tr>  <td> &nbsp;</td>  <td> &nbsp; <label id='errorMsg' ></label> </td>   </tr> 
         </table>

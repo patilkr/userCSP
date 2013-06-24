@@ -87,10 +87,10 @@ function insertItemInList(str) {
         
     if ((typeof(userCSPArray[selectedDomain][selectedDirective]) !== "undefined") && (userCSPArray[selectedDomain][selectedDirective] !== "null")) {            
             userCSPArray[selectedDomain][selectedDirective] += str;
-            dump("\n userCSPArray(1) = "+ userCSPArray[selectedDomain][selectedDirective]);
+           // dump("\n userCSPArray(1) = "+ userCSPArray[selectedDomain][selectedDirective]);
     } else {
         userCSPArray[selectedDomain][selectedDirective] = str;
-        dump("\n userCSPArray(2)= "+ userCSPArray[selectedDomain][selectedDirective]);
+       // dump("\n userCSPArray(2)= "+ userCSPArray[selectedDomain][selectedDirective]);
     }
     
     // Update userCSPAll
@@ -196,9 +196,9 @@ function listenData(evt) {
 
             if (text.match(myRegexp)) {       
                 var wildcardIndex = tokens[i].indexOf('*');
-                if (wildcardIndex != -1) { //hostname wildcard check
-                    if (wildcardIndex != 0) {
-                        if (tokens[i][wildcardIndex-1] != ':') {
+                if (wildcardIndex !== -1) { //hostname wildcard check
+                    if (wildcardIndex !== 0) {
+                        if (tokens[i][wildcardIndex-1] !== ':') {
                             document.getElementById("errorMsg").textContent = " Invalid Input:" + tokens[i];
                            // window.alert("Unexpected value:"+tokens[i]);
                             continue;
@@ -207,11 +207,11 @@ function listenData(evt) {
                 }
                 var colonIndex = tokens[i].indexOf(':');
                 var dotIndex = tokens[i].indexOf('.');
-                if ((colonIndex != -1) && (dotIndex < colonIndex)) {
+                if ((colonIndex !== -1) && (dotIndex < colonIndex)) {
                     insertItemInList(tokens[i]);
                     continue;
                 }
-                if (tokens[i].indexOf('.') != -1) {
+                if (tokens[i].indexOf('.') !== -1) {
                     insertItemInList(tokens[i]);
                 } else {
                     document.getElementById("errorMsg").textContent = " Invalid Input:" + tokens[i];
