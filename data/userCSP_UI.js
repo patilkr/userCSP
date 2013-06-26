@@ -80,20 +80,23 @@ function insertItemInList(str) {
     if ((typeof(userCSPArray[selectedDomain]) === "undefined") || !userCSPArray[selectedDomain]) {
         userCSPArray[selectedDomain] = new Array(15);
         userCSPArray[selectedDomain][selectedDirective] = "";
-        console.log("\n\n\n Goes inside then why exception on next line???");
+        // console.log("\n\n\n Goes inside then why exception on next line???");
     }
     
     str = str + " ";
-    if (typeof(userCSPArray[selectedDomain][selectedDirective]) !== "undefined") {            
+        
+    if ((typeof(userCSPArray[selectedDomain][selectedDirective]) !== "undefined") && (userCSPArray[selectedDomain][selectedDirective] !== "null")) {            
             userCSPArray[selectedDomain][selectedDirective] += str;
+           // dump("\n userCSPArray(1) = "+ userCSPArray[selectedDomain][selectedDirective]);
     } else {
         userCSPArray[selectedDomain][selectedDirective] = str;
+       // dump("\n userCSPArray(2)= "+ userCSPArray[selectedDomain][selectedDirective]);
     }
     
     // Update userCSPAll
     userCSPAll[selectedDomain] = addDirNameToPrint(userCSPArray, selectedDomain);
     if (userCSPUIState[selectedDomain] === 2) {
-        document.getElementById("currentCSP").textContent = userCSPAll[selectedDomain];
+        document.getElementById("currentCSP").textContent = userCSPAll[selectedDomain];        
     }
     
    storeUserCSPUState(selectedDomain, userCSPUIState, true, userCSPAll, userCSPArray);
@@ -193,9 +196,9 @@ function listenData(evt) {
 
             if (text.match(myRegexp)) {       
                 var wildcardIndex = tokens[i].indexOf('*');
-                if (wildcardIndex != -1) { //hostname wildcard check
-                    if (wildcardIndex != 0) {
-                        if (tokens[i][wildcardIndex-1] != ':') {
+                if (wildcardIndex !== -1) { //hostname wildcard check
+                    if (wildcardIndex !== 0) {
+                        if (tokens[i][wildcardIndex-1] !== ':') {
                             document.getElementById("errorMsg").textContent = " Invalid Input:" + tokens[i];
                            // window.alert("Unexpected value:"+tokens[i]);
                             continue;
@@ -204,11 +207,11 @@ function listenData(evt) {
                 }
                 var colonIndex = tokens[i].indexOf(':');
                 var dotIndex = tokens[i].indexOf('.');
-                if ((colonIndex != -1) && (dotIndex < colonIndex)) {
+                if ((colonIndex !== -1) && (dotIndex < colonIndex)) {
                     insertItemInList(tokens[i]);
                     continue;
                 }
-                if (tokens[i].indexOf('.') != -1) {
+                if (tokens[i].indexOf('.') !== -1) {
                     insertItemInList(tokens[i]);
                 } else {
                     document.getElementById("errorMsg").textContent = " Invalid Input:" + tokens[i];
@@ -342,7 +345,7 @@ function rulesToApply(id) {
             userCSPUIState[selectedDomain] = id;
         }        
     } catch (e) {
-        dump("\n rulesToApply- Error =" + e);
+       // dump("\n rulesToApply- Error =" + e);
     }
     userCSPUIState[selectedDomain] = id;
     
@@ -389,7 +392,7 @@ function rulesToApply(id) {
                 document.getElementById("currentCSP").textContent = inferCSPAll[selectedDomain];
                 storeUserCSPUState(selectedDomain, userCSPUIState, false, userCSPAll, userCSPArray);
             } catch (e) {
-                dump("\n rulesToApply- Error =" + e);
+               // dump("\n rulesToApply- Error =" + e);
             }
             break;
     } // end of switch () statement    
@@ -427,7 +430,7 @@ function helperToStore(domainName) {
     var userListData = "";
 
     for (var i = 0; i < userList.options.length; i++) {
-        if (userList.options[i].value)
+        if (userList.options[i].value !== null)
             userListData += userList.options[i].value + " ";
     }
 
@@ -702,7 +705,7 @@ function addDirNameToPrint(cspRuleArray, selectedDomain) {
     var Result = "";
 
     for(var j = 0; j < 11; j++) {
-        if (cspRuleArray[selectedDomain][j] ) {
+        if (cspRuleArray[selectedDomain][j] && cspRuleArray[selectedDomain][j] !== "") {
             Result += cspDirList[j] + " " + cspRuleArray[selectedDomain][j] + "; ";  
         }
     }
@@ -738,7 +741,7 @@ function combineStrict() {
 // This function automatically stores CSP directive data
 function storeDirectiveData(event) {
     var index = event.selectedIndex;
-    dump("\n Old Directive Value=" + oldDirectiveValue + " New Directive Value=" + event.options[index].value);
+   // dump("\n Old Directive Value=" + oldDirectiveValue + " New Directive Value=" + event.options[index].value);
 
     // Store user CSP policy for the directive into global table in the corresponding domain name field
     // 1. get the currently selected Domain Name

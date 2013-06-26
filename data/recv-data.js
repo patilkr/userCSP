@@ -127,14 +127,14 @@ addon.port.on("showCSPRules", function (activeWindow, websiteCSPList, websiteLis
     setSelectedDomain(activeWindow);   
 
     for (var i = 0; i < dNames.options.length; i++) {
-        dump("\n\n Processing Domain Name = " + dNames.options[i].value);
+       // dump("\n\n Processing Domain Name = " + dNames.options[i].value);
         
         if (typeof(websiteListArray[dNames.options[i].value]) !== "undefined") {
             websiteCSPArray[dNames.options[i].value] = new Array(11);
 
             // store website defined CSP in global table 
             websiteCSPAll[dNames.options[i].value] = websiteCSPList[dNames.options[i].value];
-            dump("\n WebsiteCSPALL = " + websiteCSPAll[dNames.options[i].value]);
+          //  dump("\n WebsiteCSPALL = " + websiteCSPAll[dNames.options[i].value]);
             for (var k = 0; k < 11; k++) {
                 websiteCSPArray[dNames.options[i].value][k] = websiteListArray[dNames.options[i].value][k];              
             } // end of FOR Loop
@@ -150,7 +150,7 @@ addon.port.on("showCSPRules", function (activeWindow, websiteCSPList, websiteLis
                 }
             }
         } catch (e) {
-            dump("\n\n Unsuccesful to record UI state\n");
+          //  dump("\n\n Unsuccesful to record UI state\n");
         }
         // Record userCSP in Database
         try {
@@ -178,7 +178,7 @@ addon.port.on("showCSPRules", function (activeWindow, websiteCSPList, websiteLis
 
             } // endof IF dListData Loop
         } catch (e) {
-            dump("\n\n\n\n Error in userCSP rule restoring in 'showCSPRules' event\n");        
+           // dump("\n\n\n\n Error in userCSP rule restoring in 'showCSPRules' event\n");        
         }
 
         // Infer CSP rules
@@ -196,7 +196,7 @@ addon.port.on("showCSPRules", function (activeWindow, websiteCSPList, websiteLis
         } // end of IF inferRulesListArray Loop
             
         } catch(e) {
-            dump(" ERROR!! inferRulesList in recv-data is not valid");
+           // dump(" ERROR!! inferRulesList in recv-data is not valid");
         }
         
     } // end of FOR loop "i"
@@ -224,7 +224,9 @@ addon.port.on("changeActiveDomain", function (activeDomain) {
         setSelectedDomain(activeDomain);
         // Invoke domain change function to redisplay policy values
         getDomainChoice(null);
-    } catch (e) { dump("\n @@WARNING!! userCSP_UI.js is not yet initialized. So setSlectedDomain Doesn't exists");}
+    } catch (e) { 
+        //dump("\n @@WARNING!! userCSP_UI.js is not yet initialized. So setSlectedDomain Doesn't exists");
+    }
 });
 
 // Remove hostname recevied from main-add to domain names drop down box
