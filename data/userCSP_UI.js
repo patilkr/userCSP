@@ -141,27 +141,25 @@ function listenData(evt) {
             return;
         }
         // For "script-src" or "style-src" only 'unsafe-inline' accepted
-        if (text === "'unsafe-inline'" && (previousTabId === 1 || previousTabId === 5) ) {  
-            insertItemInList("'unsafe-inline'");
-            document.getElementById("rule1").value = ""; 
-            return;
-        }
-         if (text === "unsafe-inline" && (previousTabId === 1 || previousTabId === 5) ) {  
-            insertItemInList("'unsafe-inline'");
-            document.getElementById("rule1").value = ""; 
-            return;
-        }
+        if (text === "'unsafe-inline'"  || text === "unsafe-inline") {  
+        	var dirVal = getSelectedDirective();        	
+        	if (dirVal === "1" || dirVal === "5") {
+        		insertItemInList("'unsafe-inline'");
+        		document.getElementById("rule1").value = ""; 
+        		return;
+        	}
+            
+        }         
         // 'unsafe-eval' i/p accepted only for "script-src" or "style-src" 
-        if (text === "'unsafe-eval'" && (previousTabId === 1 || previousTabId === 5) ) {  
-            insertItemInList("'unsafe-eval'");
-            document.getElementById("rule1").value = ""; 
-            return;
+        if (text === "'unsafe-eval'" || text === "unsafe-eval") {  
+        	var dirVal = getSelectedDirective();
+        	if (dirVal === "1" || dirVal === "5") {  
+                insertItemInList("'unsafe-eval'");
+                document.getElementById("rule1").value = ""; 
+                return;
+            }
         }
-         if (text === "unsafe-eval" && (previousTabId === 1 || previousTabId === 5) ) {  
-            insertItemInList("'unsafe-eval'");
-            document.getElementById("rule1").value = ""; 
-            return;
-        }
+         
 
         var myRegexp = new RegExp('^[a-z0-9 _.:/*\']*$', 'i');
         // any number of a-z 0-9 spaces underscore . : * \ 
