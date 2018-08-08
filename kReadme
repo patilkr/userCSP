@@ -1,3 +1,4 @@
 This version uses "textContent" method rather than "innerHTML".
 It removes need of "sqlite.js" library. 
 It also uses parameter binding to prevent SQL injection attacks.
+ 
